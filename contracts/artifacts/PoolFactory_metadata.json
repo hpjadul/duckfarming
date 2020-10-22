@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"localhost/contracts/PoolFactory.sol": "PoolFactory"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"localhost/contracts/PoolFactory.sol": {
+			"keccak256": "0xfc8d245b72303390f337366000d1539dc468adc1fa20f5a8a9804ce1a50c434a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://06f439f3c0e2edddb86240f416b22b411a805b6b1772b97fd781c342c4e51d70",
+				"dweb:/ipfs/QmYrs9aqxSavtfmVmoJubGf8qdMfKdhZNdNYw3eszaxeyq"
+			]
+		}
+	},
+	"version": 1
+}
