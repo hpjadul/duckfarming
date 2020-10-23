@@ -78,6 +78,19 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "liquidityPool",
+						"type": "address"
+					}
+				],
+				"name": "addLiquidityPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "owner",
 						"type": "address"
 					},
@@ -465,11 +478,11 @@
 			]
 		},
 		"localhost/contracts/DuckToken.sol": {
-			"keccak256": "0x9c65df4eec49447ad76478bbb10bc08e8f25eabf95f97e4de9393f647264bd86",
+			"keccak256": "0xc3ba75addab1c19b42fc30ef542607d8b130bbf7b0def5eb1e63a6d025bbdb22",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://098e32b0a6c5c0659e48708f47ff5bd8564054c76b7747c50aed270277af52b9",
-				"dweb:/ipfs/QmNd2p13sRCuZJ1s9Z7QTyRLVqfbu9NtH56BV9KJgcZrZW"
+				"bzz-raw://e6753ff8a3a1a60be9fe6f50ee10486ef7a8cbe1b5bb4980612ba01a56303f04",
+				"dweb:/ipfs/QmapTLtEwSVe3mogYb5s2yyYzfwvEip4VmT8aHd97gtzyu"
 			]
 		}
 	},
