@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //@todo check name and symbol
 contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
 
-	uint public constant PRESALE_SUPPLY 	= 20000000*10**18;
-	uint public constant TEAM_SUPPLY 			= 10000000*10**18;
-	uint public constant MAX_FARMING_POOL = 70000000*10**18;
+	uint public constant PRESALE_SUPPLY 	= 20000000e18;
+	uint public constant TEAM_SUPPLY 			= 10000000e18;
+	uint public constant MAX_FARMING_POOL = 70000000e18;
 
 	mapping(address => bool) liquidityPools;
 	uint public currentFarmingPool;
