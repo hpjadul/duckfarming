@@ -41,6 +41,7 @@ contract Pool {
   event Deposit(address indexed from, uint amount);
   event Withdraw(address indexed to, uint amount);
   event NewPeriod(uint indexed startingBlock, uint indexed blocks, uint farmingSupply);
+  event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
 	modifier onlyFactory() { 
 		require(msg.sender == address(controller), "onlyFactory"); 
@@ -107,7 +108,6 @@ contract Pool {
   }
 
   function deposit(uint256 _amount) public {
-    require(block.number > lastRewardBlock || block.number < periods[0].startingBlock, "only 1 transaction in the block");
     require(_amount > 0, "_amount must be more than zero");
     UserInfo storage user = userInfo[msg.sender];
  
@@ -129,31 +129,35 @@ contract Pool {
   }
 
   function withdraw(uint256 _amount) public {
-    require(block.number > lastRewardBlock || block.number < periods[0].startingBlock, "only 1 transaction in the block");
 
     UserInfo storage user = userInfo[msg.sender];
     
     require(user.amount >= _amount, "withdraw: not good");
 
-    if(_amount > 0) {
-      lpToken.safeTransfer(address(msg.sender), _amount);
-    }
-
     updatePool();
     
     uint256 pending = user.amount.mul(accDuckPerShare).div(1e18).sub(user.rewardDebt);
-    
     if(pending > 0) {
       safeDuckTransfer(msg.sender, pending);
     }
- 
+    
     if(_amount > 0) {
+      lpToken.safeTransfer(address(msg.sender), _amount);
       user.amount = user.amount.sub(_amount);
     }
      
     user.rewardDebt = user.amount.mul(accDuckPerShare).div(1e18);
     emit Withdraw(msg.sender, _amount);
   }
+
+  // Withdraw without caring about rewards. EMERGENCY ONLY.
+    function emergencyWithdraw(uint256 _pid) public {
+      UserInfo storage user = userInfo[msg.sender];
+      lpToken.safeTransfer(address(msg.sender), user.amount);
+      emit EmergencyWithdraw(msg.sender, _pid, user.amount);
+      user.amount = 0;
+      user.rewardDebt = 0;
+    }
 
   function getCurrentPeriodIndex() public view returns(uint) {
   	for(uint i = 0; i < periods.length; i++) {
@@ -175,7 +179,7 @@ contract Pool {
 
   		uint buf = periods[i].startingBlock.add(periods[i].blocks);
 
-  		if(block.number > buf) {
+  		if(block.number > buf && buf > lastRewardBlock) {
   			totalTokens += buf.sub(lastRewardBlock).mul(periods[i].tokensPerBlock);
   			overflown = true;
   		} else {
