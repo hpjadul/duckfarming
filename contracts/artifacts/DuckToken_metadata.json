@@ -287,12 +287,31 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_to",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "liquidityPools",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
@@ -533,10 +552,10 @@
 			]
 		},
 		"localhost/contracts/DuckToken.sol": {
-			"keccak256": "0x86a083d8ed7348902c0113a9eb13d37b271aa5e602fa6f73439364678cd417f9",
+			"keccak256": "0xf721ae5f7b2c6f6e9b771966c86fece89d3fc358385dd42566c0f6ae2bd48bc3",
 			"urls": [
-				"bzz-raw://6550c46b74bf7d672240b9547ef123839d482b247d56742b7267ca5e5baabcee",
-				"dweb:/ipfs/QmXRjfskXoAfXt4oVMhEbLLyUAVAzdQkDMo2s2YuKMfAE6"
+				"bzz-raw://be37ed9cfe4a0f250d01009d7c46f00a6409f3b97e058b966a120bacbf537ea7",
+				"dweb:/ipfs/QmVKZfNVb8L8MqYirQWCroiq8R2DEPBW5HnJ1Qp6mNhRFr"
 			]
 		}
 	},

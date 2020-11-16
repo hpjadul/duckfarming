@@ -11,7 +11,7 @@ contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
 	uint public constant TEAM_SUPPLY 			= 10000000e18;
 	uint public constant MAX_FARMING_POOL 		= 70000000e18;
 
-	mapping(address => bool) liquidityPools;
+	mapping(address => bool) public liquidityPools;
 	uint public currentFarmingPool;
 
 	constructor(address presaleWallet, address teamWallet) public {
