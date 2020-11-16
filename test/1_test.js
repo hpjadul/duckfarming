@@ -7,69 +7,69 @@ const TestToken = artifacts.require("TestToken")
 
 const ADDRESS0 = '0x0000000000000000000000000000000000000000';
 //000000000000000000
-// const Pool1 = {
-//   startingBlock: 0,
-//   stage0: {
-//     blocks: 46368,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage1: {
-//     blocks: 558072,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage2: {
-//     blocks: 46368,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage3: {
-//     blocks: 558072,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage4: {
-//     blocks: 46368,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage5: {
-//     blocks: 1162512,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage6: {
-//     blocks: 9671040,
-//     farmingSupply: '5000000000000000000000000'
-//   }
-// }
-
 const Pool1 = {
   startingBlock: 0,
   stage0: {
-    blocks: 463,
+    blocks: 46368,
     farmingSupply: '3000000000000000000000000'
   },
   stage1: {
-    blocks: 5580,
+    blocks: 558072,
     farmingSupply: '2000000000000000000000000'
   },
   stage2: {
-    blocks: 463,
+    blocks: 46368,
     farmingSupply: '3000000000000000000000000'
   },
   stage3: {
-    blocks: 5580,
+    blocks: 558072,
     farmingSupply: '2000000000000000000000000'
   },
   stage4: {
-    blocks: 463,
+    blocks: 46368,
     farmingSupply: '3000000000000000000000000'
   },
   stage5: {
-    blocks: 11625,
+    blocks: 1162512,
     farmingSupply: '2000000000000000000000000'
   },
   stage6: {
-    blocks: 96710,
+    blocks: 9671040,
     farmingSupply: '5000000000000000000000000'
   }
 }
+
+// const Pool1 = {
+//   startingBlock: 0,
+//   stage0: {
+//     blocks: 463,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage1: {
+//     blocks: 5580,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage2: {
+//     blocks: 463,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage3: {
+//     blocks: 5580,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage4: {
+//     blocks: 463,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage5: {
+//     blocks: 11625,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage6: {
+//     blocks: 96710,
+//     farmingSupply: '5000000000000000000000000'
+//   }
+// }
 
 var bufferBlock = 0;
 
@@ -170,6 +170,8 @@ contract("Pool tests", accounts => {
       assert.fail(e)
     }
   })
+
+  return;
 
   it('deposit to pool', async() => {
     try {

@@ -27,10 +27,10 @@ interface PoolInterface extends ethers.utils.Interface {
     "lastRewardBlock()": FunctionFragment;
     "lpToken()": FunctionFragment;
     "periods(uint256)": FunctionFragment;
-    "rewardPerShare()": FunctionFragment;
     "userInfo(address)": FunctionFragment;
     "addPeriod(uint256,uint256,uint256)": FunctionFragment;
     "updatePool()": FunctionFragment;
+    "getUserPendingReward(address)": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
     "emergencyWithdraw(uint256)": FunctionFragment;
@@ -56,10 +56,6 @@ interface PoolInterface extends ethers.utils.Interface {
     functionFragment: "periods",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "rewardPerShare",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "userInfo", values: [string]): string;
   encodeFunctionData(
     functionFragment: "addPeriod",
@@ -68,6 +64,10 @@ interface PoolInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "updatePool",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserPendingReward",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
@@ -102,13 +102,13 @@ interface PoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "lpToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "periods", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "rewardPerShare",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "userInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addPeriod", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updatePool", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserPendingReward",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
@@ -239,18 +239,6 @@ export class Pool extends Contract {
       3: BigNumber;
     }>;
 
-    rewardPerShare(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "rewardPerShare()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -288,6 +276,20 @@ export class Pool extends Contract {
     updatePool(overrides?: Overrides): Promise<ContractTransaction>;
 
     "updatePool()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    getUserPendingReward(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getUserPendingReward(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     deposit(
       _amount: BigNumberish,
@@ -392,10 +394,6 @@ export class Pool extends Contract {
     3: BigNumber;
   }>;
 
-  rewardPerShare(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "rewardPerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   userInfo(
     arg0: string,
     overrides?: CallOverrides
@@ -433,6 +431,16 @@ export class Pool extends Contract {
   updatePool(overrides?: Overrides): Promise<ContractTransaction>;
 
   "updatePool()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  getUserPendingReward(
+    userAddress: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getUserPendingReward(address)"(
+    userAddress: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   deposit(
     _amount: BigNumberish,
@@ -521,10 +529,6 @@ export class Pool extends Contract {
       3: BigNumber;
     }>;
 
-    rewardPerShare(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardPerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -562,6 +566,16 @@ export class Pool extends Contract {
     updatePool(overrides?: CallOverrides): Promise<void>;
 
     "updatePool()"(overrides?: CallOverrides): Promise<void>;
+
+    getUserPendingReward(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getUserPendingReward(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     deposit(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -644,10 +658,6 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    rewardPerShare(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardPerShare()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     userInfo(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "userInfo(address)"(
@@ -672,6 +682,16 @@ export class Pool extends Contract {
     updatePool(overrides?: Overrides): Promise<BigNumber>;
 
     "updatePool()"(overrides?: Overrides): Promise<BigNumber>;
+
+    getUserPendingReward(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getUserPendingReward(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     deposit(_amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
@@ -743,12 +763,6 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    rewardPerShare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "rewardPerShare()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -776,6 +790,16 @@ export class Pool extends Contract {
     updatePool(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "updatePool()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    getUserPendingReward(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getUserPendingReward(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     deposit(
       _amount: BigNumberish,

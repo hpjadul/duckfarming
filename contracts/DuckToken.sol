@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //@todo check name and symbol
 contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
 
-	uint public constant PRESALE_SUPPLY 	= 20000000e18;
+	uint public constant PRESALE_SUPPLY 		= 20000000e18;
 	uint public constant TEAM_SUPPLY 			= 10000000e18;
-	uint public constant MAX_FARMING_POOL = 70000000e18;
+	uint public constant MAX_FARMING_POOL 		= 70000000e18;
 
 	mapping(address => bool) liquidityPools;
 	uint public currentFarmingPool;
@@ -23,10 +23,10 @@ contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
 		liquidityPools[liquidityPool] = true;
 	}
 
-	function mint(address _to, uint256 _amount) public onlyOwner {
-		require(currentFarmingPool.add(_amount) <= MAX_FARMING_POOL, "exceed farming amount");
-		currentFarmingPool += _amount; 
-    _mint(_to, _amount);
+	function mint(address to, uint256 amount) public onlyOwner {
+		require(currentFarmingPool.add(amount) <= MAX_FARMING_POOL, "exceed farming amount");
+		currentFarmingPool += amount; 
+        _mint(to, amount);
   }
 
   function transfer(address recipient, uint256 amount) public override returns (bool) {

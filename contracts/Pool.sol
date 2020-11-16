@@ -16,8 +16,20 @@ contract Pool {
   struct UserInfo {
     uint256 amount;     // How many LP tokens the user has provided.
     uint256 rewardDebt; // Reward debt. See explanation below.
+    //
+    // We do some fancy math here. Basically, any point in time, the amount of SUSHIs
+    // entitled to a user but is pending to be distributed is:
+    //
+    //   pending reward = (user.amount * pool.accSushiPerShare) - user.rewardDebt
+    //
+    // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
+    //   1. The pool's `accSushiPerShare` (and `lastRewardBlock`) gets updated.
+    //   2. User receives the pending reward sent to his/her address.
+    //   3. User's `amount` gets updated.
+    //   4. User's `rewardDebt` gets updated.
   }
 
+  // Info of each period.
 	struct Period {
 		uint startingBlock;
 		uint blocks;
@@ -25,17 +37,22 @@ contract Pool {
 		uint tokensPerBlock;
 	}
 
+  // Info of each period.
 	Period[] public periods;
+
+  // Controller address
 	PoolController public controller;
+
+  // Last block number that DUCKs distribution occurs.
 	uint public lastRewardBlock;
-	
-
+  // The DUCK TOKEN
   DuckToken public duck;
+  // Address of LP token contract.
   IERC20 public lpToken;
-
-  uint public rewardPerShare;
+  // Accumulated DUCKs per share, times 1e18. See below.
   uint public accDuckPerShare;
 
+  // Info of each user that stakes LP tokens.
   mapping(address => UserInfo) public userInfo;
 
   event Deposit(address indexed from, uint amount);
@@ -43,8 +60,8 @@ contract Pool {
   event NewPeriod(uint indexed startingBlock, uint indexed blocks, uint farmingSupply);
   event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
-	modifier onlyFactory() { 
-		require(msg.sender == address(controller), "onlyFactory"); 
+	modifier onlyController() { 
+		require(msg.sender == address(controller), "onlyController"); 
 		_; 
 	}
 	
@@ -67,7 +84,8 @@ contract Pool {
     lastRewardBlock = _startingBlock;
 	}
 	
-	function addPeriod(uint startingBlock, uint blocks, uint farmingSupply) public onlyFactory {
+  // Update a pool by adding NEW period. Can only be called by the controller.
+	function addPeriod(uint startingBlock, uint blocks, uint farmingSupply) public onlyController {
     if(periods.length > 0) {
       require(startingBlock > periods[periods.length-1].startingBlock.add(periods[periods.length-1].blocks), "two periods in the same time");
     }
@@ -84,6 +102,7 @@ contract Pool {
     emit NewPeriod(startingBlock, blocks, farmingSupply);
 	}
 
+  // Update reward variables of the given pool to be up-to-date.
   function updatePool() public {
     if (block.number <= lastRewardBlock) {
       return;
@@ -107,8 +126,24 @@ contract Pool {
     lastRewardBlock = block.number;
   }
 
-  function deposit(uint256 _amount) public {
-    require(_amount > 0, "_amount must be more than zero");
+  // Get user pending reward. Just for frontend.
+  function getUserPendingReward(address userAddress) public view returns(uint) {
+    UserInfo storage user = userInfo[userAddress];
+    uint256 duckReward = calculateDuckTokensForMint();
+    
+    uint256 lpSupply = lpToken.balanceOf(address(this));
+    if (lpSupply == 0) {
+      return 0;
+    }
+    
+    uint _accDuckPerShare = accDuckPerShare.add(duckReward.mul(1e18).mul(93).div(100).div(lpSupply));
+
+    return user.amount.mul(_accDuckPerShare).div(1e18).sub(user.rewardDebt);
+  }
+  
+  // Deposit LP tokens to Pool for DUCK allocation.
+  function deposit(uint256 amount) public {
+    require(amount > 0, "amount must be more than zero");
     UserInfo storage user = userInfo[msg.sender];
  
     updatePool();
@@ -120,19 +155,20 @@ contract Pool {
       }
     }
     
-    user.amount = user.amount.add(_amount);
-    lpToken.safeTransferFrom(msg.sender, address(this), _amount);
+    user.amount = user.amount.add(amount);
+    lpToken.safeTransferFrom(msg.sender, address(this), amount);
     
     user.rewardDebt = user.amount.mul(accDuckPerShare).div(1e18);
     
-    emit Deposit(msg.sender, _amount);
+    emit Deposit(msg.sender, amount);
   }
 
-  function withdraw(uint256 _amount) public {
+   // Withdraw LP tokens from the Pool.
+  function withdraw(uint256 amount) public {
 
     UserInfo storage user = userInfo[msg.sender];
     
-    require(user.amount >= _amount, "withdraw: not good");
+    require(user.amount >= amount, "withdraw: not good");
 
     updatePool();
     
@@ -141,24 +177,25 @@ contract Pool {
       safeDuckTransfer(msg.sender, pending);
     }
     
-    if(_amount > 0) {
-      lpToken.safeTransfer(address(msg.sender), _amount);
-      user.amount = user.amount.sub(_amount);
+    if(amount > 0) {
+      lpToken.safeTransfer(address(msg.sender), amount);
+      user.amount = user.amount.sub(amount);
     }
      
     user.rewardDebt = user.amount.mul(accDuckPerShare).div(1e18);
-    emit Withdraw(msg.sender, _amount);
+    emit Withdraw(msg.sender, amount);
   }
 
   // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyWithdraw(uint256 _pid) public {
-      UserInfo storage user = userInfo[msg.sender];
-      lpToken.safeTransfer(address(msg.sender), user.amount);
-      emit EmergencyWithdraw(msg.sender, _pid, user.amount);
-      user.amount = 0;
-      user.rewardDebt = 0;
-    }
+  function emergencyWithdraw(uint256 pid) public {
+    UserInfo storage user = userInfo[msg.sender];
+    lpToken.safeTransfer(address(msg.sender), user.amount);
+    emit EmergencyWithdraw(msg.sender, pid, user.amount);
+    user.amount = 0;
+    user.rewardDebt = 0;
+  }
 
+  // Get current period index.
   function getCurrentPeriodIndex() public view returns(uint) {
   	for(uint i = 0; i < periods.length; i++) {
   		if(block.number > periods[i].startingBlock && block.number < periods[i].startingBlock.add(periods[i].blocks)) {
@@ -167,11 +204,11 @@ contract Pool {
   	}
   }
 
+  // Calculate DUCK Tokens for mint near current time.
   function calculateDuckTokensForMint() public view returns(uint) {
   	uint totalTokens;
   	bool overflown;
 
-  	//@todo double check this
   	for(uint i = 0; i < periods.length; i++) {
   		if(block.number < periods[i].startingBlock) {
   			break;
@@ -197,12 +234,12 @@ contract Pool {
   }
 
   // Safe duck transfer function, just in case if rounding error causes pool to not have enough DUCKs.
-  function safeDuckTransfer(address _to, uint256 _amount) internal {
+  function safeDuckTransfer(address to, uint256 amount) internal {
     uint256 duckBal = duck.balanceOf(address(this));
-    if (_amount > duckBal) {
-      duck.transfer(_to, duckBal);
+    if (amount > duckBal) {
+      duck.transfer(to, duckBal);
     } else {
-      duck.transfer(_to, _amount);
+      duck.transfer(to, amount);
     }
   }
 }

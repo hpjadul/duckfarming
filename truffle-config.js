@@ -19,12 +19,12 @@
  */
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
-// const infuraKey = "cf016515a2f04bb6b8cc8b5feac1caf1";
+const infuraKey = "cf016515a2f04bb6b8cc8b5feac1caf1";
 //
 // const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const mnemonic = "cheap inch cry pulse tornado spell embrace write suspect gorilla wish page".toString().trim()
 // let ropstenProvider = new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/` + infuraKey)
-// let rinkebyProvider = new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/` + infuraKey)
+let rinkebyProvider = new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/` + infuraKey)
 // let kovanProvider = new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/` + infuraKey)
 
 module.exports = {
@@ -72,15 +72,15 @@ module.exports = {
     //   timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
     //   skipDryRun: false     // Skip dry run before migrations? (default: false for public nets )
     // },
-    // rinkeby: {
-    //   provider: rinkebyProvider,
-    //   network_id: 4,       // Ropsten's id
-    //   gas: 10000000,        // Ropsten has a lower block limit than mainnet
-    //   gasPrice: 200000000000,
-    //   confirmations: 0,    // # of confs to wait between deployments. (default: 0)
-    //   timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-    //   skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-    // },
+    rinkeby: {
+      provider: rinkebyProvider,
+      network_id: 4,       // Ropsten's id
+      gas: 10000000,        // Ropsten has a lower block limit than mainnet
+      gasPrice: 200000000000,
+      confirmations: 0,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
     // kovan: {
     //   provider: kovanProvider,
     //   network_id: 42,       // Ropsten's id
