@@ -39,6 +39,11 @@ contract PoolController is Ownable {
 	function addPeriod(uint poolIndex, uint startingBlock, uint blocks, uint farmingSupply) public onlyOwner {
 		pools[poolIndex].addPeriod(startingBlock, blocks, farmingSupply);
 	}
+	
+	// Add new revenue for a pool. Can only be called by the owner. 
+	function addRevenue(uint poolIndex, address tokenAddress, uint amount) public onlyOwner {
+	    pools[poolIndex].addRevenue(tokenAddress, amount);
+	}
 
 	// Mint DUCK TOKEN. Can be called by pools only
 	function mint(address to, uint value) public {

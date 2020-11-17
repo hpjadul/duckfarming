@@ -156,6 +156,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "addRevenue",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "calculateDuckTokensForMint",
 				"outputs": [
@@ -185,7 +203,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
@@ -211,7 +229,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_pid",
+						"name": "pid",
 						"type": "uint256"
 					}
 				],
@@ -313,6 +331,35 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "revenues",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "updatePool",
 				"outputs": [],
@@ -347,7 +394,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
@@ -430,24 +477,24 @@
 			]
 		},
 		"localhost/contracts/DuckToken.sol": {
-			"keccak256": "0xde362db1870a0dcd11d4c88a7a30964ccd4f91f1d7b52ef9ca5dd280bf9a468e",
+			"keccak256": "0xf721ae5f7b2c6f6e9b771966c86fece89d3fc358385dd42566c0f6ae2bd48bc3",
 			"urls": [
-				"bzz-raw://d821ec5046d3414131b2d4dc14b71487c7c90cda407e3b5ea6c1595b720cc683",
-				"dweb:/ipfs/QmWtrJ3264yUxE564D7G8QRpz2avnfF5XUXPFNM6PCqdVA"
+				"bzz-raw://be37ed9cfe4a0f250d01009d7c46f00a6409f3b97e058b966a120bacbf537ea7",
+				"dweb:/ipfs/QmVKZfNVb8L8MqYirQWCroiq8R2DEPBW5HnJ1Qp6mNhRFr"
 			]
 		},
 		"localhost/contracts/Pool.sol": {
-			"keccak256": "0xd3bab9d1fe8f0442e9b11eae5006fa3e3d0ea7faf8b7a923623a3aa1b7f9461f",
+			"keccak256": "0xb053c78f57fb9ba9039b739ba2a9d3933257d5259352ee13aa80f221018e46f7",
 			"urls": [
-				"bzz-raw://22e6d882344d015240c6ed7db6aeb27d2c0a4fb2d1bd6f39948d0a07bbe50a7e",
-				"dweb:/ipfs/QmbFq2X6ajajvYVD8Zo3a646fH9e91hv7Xh5LDYk45G5xb"
+				"bzz-raw://48192b35c018852ed3199dd68d3389873dd7aa0dd64200a241aac9ff1250b2a3",
+				"dweb:/ipfs/QmYemP9s8pRQRXxg6fvZTqQXHgFrv3RBEwe5LJvoeMkVQx"
 			]
 		},
 		"localhost/contracts/PoolController.sol": {
-			"keccak256": "0x6f75eebfea98e73294b99c37cb233f54dfbca3bd24e8d2910c7faad03dda438e",
+			"keccak256": "0xa416c2945dfceb6250dfd03589766d7cef0d27f3a41c121bb56a1c88c2f33010",
 			"urls": [
-				"bzz-raw://f8ac0530bf547d124ca405c19f6783d9901abc03cdf1a6280be0396194ce6a22",
-				"dweb:/ipfs/QmPmDMeHhQ6XFPPt5gsBMxiEbiBQUYQUHBxH43dCb2DRfs"
+				"bzz-raw://f16bbf20410e4d8af2610410fd7a67e162587986533bee68da431be7cf172b89",
+				"dweb:/ipfs/QmXnCBrcXCF6yY7KJDy3SWDtfmnXmAmiveLLqVbqeFdfCc"
 			]
 		}
 	},

@@ -54,15 +54,29 @@ contract Pool {
 
   // Info of each user that stakes LP tokens.
   mapping(address => UserInfo) public userInfo;
+  
+  
+  //Revenue part
+  struct Revenue {
+    address tokenAddress;
+    uint totalSupply;
+    uint amount;
+  }
+    
+  // Array of created revenues
+  Revenue[] public revenues;
+  
+  // mapping of claimed user revenues
+  mapping(address => mapping(uint => bool)) revenuesClaimed;
 
   event Deposit(address indexed from, uint amount);
   event Withdraw(address indexed to, uint amount);
   event NewPeriod(uint indexed startingBlock, uint indexed blocks, uint farmingSupply);
   event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
-	modifier onlyController() { 
+	modifier onlyController() {
 		require(msg.sender == address(controller), "onlyController"); 
-		_; 
+		_;
 	}
 	
 	constructor(address _lpToken, uint _startingBlock, uint[] memory _blocks, uint[] memory _farmingSupplies) public {
@@ -107,6 +121,8 @@ contract Pool {
     if (block.number <= lastRewardBlock) {
       return;
     }
+
+    claimRevenue(msg.sender);
  
     uint256 lpSupply = lpToken.balanceOf(address(this));
     if (lpSupply == 0) {
@@ -119,26 +135,10 @@ contract Pool {
       controller.mint(controller.devAddress(), duckReward.mul(7).div(100));
       controller.mint(address(this), duckReward.mul(93).div(100));
  
-      //
       accDuckPerShare = accDuckPerShare.add(duckReward.mul(1e18).mul(93).div(100).div(lpSupply));
     }
     
     lastRewardBlock = block.number;
-  }
-
-  // Get user pending reward. Just for frontend.
-  function getUserPendingReward(address userAddress) public view returns(uint) {
-    UserInfo storage user = userInfo[userAddress];
-    uint256 duckReward = calculateDuckTokensForMint();
-    
-    uint256 lpSupply = lpToken.balanceOf(address(this));
-    if (lpSupply == 0) {
-      return 0;
-    }
-    
-    uint _accDuckPerShare = accDuckPerShare.add(duckReward.mul(1e18).mul(93).div(100).div(lpSupply));
-
-    return user.amount.mul(_accDuckPerShare).div(1e18).sub(user.rewardDebt);
   }
   
   // Deposit LP tokens to Pool for DUCK allocation.
@@ -195,6 +195,21 @@ contract Pool {
     user.rewardDebt = 0;
   }
 
+  // Get user pending reward. Frontend function..
+  function getUserPendingReward(address userAddress) public view returns(uint) {
+    UserInfo storage user = userInfo[userAddress];
+    uint256 duckReward = calculateDuckTokensForMint();
+    
+    uint256 lpSupply = lpToken.balanceOf(address(this));
+    if (lpSupply == 0) {
+      return 0;
+    }
+    
+    uint _accDuckPerShare = accDuckPerShare.add(duckReward.mul(1e18).mul(93).div(100).div(lpSupply));
+
+    return user.amount.mul(_accDuckPerShare).div(1e18).sub(user.rewardDebt);
+  }
+
   // Get current period index.
   function getCurrentPeriodIndex() public view returns(uint) {
   	for(uint i = 0; i < periods.length; i++) {
@@ -240,6 +255,63 @@ contract Pool {
       duck.transfer(to, duckBal);
     } else {
       duck.transfer(to, amount);
+    }
+  }
+    
+  //--------------------------------------------------------------------------------------
+  //---------------------------------REVENUE PART-----------------------------------------
+  //--------------------------------------------------------------------------------------
+  
+  // Add new Revenue, can be called only by controller
+  function addRevenue(address _tokenAddress, uint _amount) public onlyController {
+
+    Revenue memory revenue = Revenue({
+      tokenAddress: _tokenAddress,
+      totalSupply: lpToken.balanceOf(address(this)),
+      amount: _amount
+    });
+
+    revenues.push(revenue);
+  }
+
+  // Get user last revenue. Frontend function.
+  function getUserLastRevenue(address userAddress) public view returns(address, uint) {
+    UserInfo storage user = userInfo[userAddress];
+
+    for(uint i = 0; i < revenues.length; i++) {
+      if(!revenuesClaimed[userAddress][i]) {
+        uint userRevenue = revenues[i].amount.mul(user.amount).div(revenues[i].totalSupply);
+        return revenues[i].tokenAddress, userRevenue);
+      }
+    }
+  }
+  
+    
+  // claimRevenue is private function, called on updatePool for transaction caller
+  function claimRevenue(address userAddress) private {
+    UserInfo storage user = userInfo[userAddress];
+
+    for(uint i = 0; i < revenues.length; i++) {
+      if(!revenuesClaimed[userAddress][i]) {
+        revenuesClaimed[userAddress][i] = true;
+        uint userRevenue = revenues[i].amount.mul(user.amount).div(revenues[i].totalSupply);
+
+        safeRevenueTransfer(revenues[i].tokenAddress, userAddress, userRevenue);
+      }
+    }
+  }
+    
+  // Safe revenue transfer for avoid misscalculations
+  function safeRevenueTransfer(address tokenAddress, address to, uint amount) private {
+    uint balance = IERC20(tokenAddress).balanceOf(address(this));
+    if(balance == 0 || amount == 0) {
+      return;
+    }
+
+    if(balance >= amount) {
+      IERC20(tokenAddress).transfer(to, amount);
+    } else {
+      IERC20(tokenAddress).transfer(to, balance);
     }
   }
 }

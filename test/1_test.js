@@ -6,38 +6,40 @@ const Pool = artifacts.require("Pool");
 const TestToken = artifacts.require("TestToken")
 
 const ADDRESS0 = '0x0000000000000000000000000000000000000000';
+//@TODO remove all commented lines
+
 //000000000000000000
-const Pool1 = {
-  startingBlock: 0,
-  stage0: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage1: {
-    blocks: 558072,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage2: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage3: {
-    blocks: 558072,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage4: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage5: {
-    blocks: 1162512,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage6: {
-    blocks: 9671040,
-    farmingSupply: '5000000000000000000000000'
-  }
-}
+// const Pool1 = {
+//   startingBlock: 0,
+//   stage0: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage1: {
+//     blocks: 558072,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage2: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage3: {
+//     blocks: 558072,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage4: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage5: {
+//     blocks: 1162512,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage6: {
+//     blocks: 9671040,
+//     farmingSupply: '5000000000000000000000000'
+//   }
+// }
 
 // [46368, 558072, 46368, 558072 , 46368, 1162512 , 9671040]
 // ["3000000000000000000000000", "2000000000000000000000000", "3000000000000000000000000", "2000000000000000000000000", "3000000000000000000000000", "2000000000000000000000000", "5000000000000000000000000"]
@@ -50,37 +52,37 @@ const Pool1 = {
 
 
 
-// const Pool1 = {
-//   startingBlock: 0,
-//   stage0: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage1: {
-//     blocks: 5580,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage2: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage3: {
-//     blocks: 5580,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage4: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage5: {
-//     blocks: 11625,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage6: {
-//     blocks: 96710,
-//     farmingSupply: '5000000000000000000000000'
-//   }
-// }
+const Pool1 = {
+  startingBlock: 0,
+  stage0: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage1: {
+    blocks: 5580,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage2: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage3: {
+    blocks: 5580,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage4: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage5: {
+    blocks: 11625,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage6: {
+    blocks: 96710,
+    farmingSupply: '5000000000000000000000000'
+  }
+}
 
 var bufferBlock = 0;
 
@@ -98,6 +100,9 @@ contract("Pool tests", accounts => {
       DuckTokenInstance = await DuckToken.deployed();
       PoolControllerInstance = await PoolController.deployed();
       TestLPInstance1 = await TestToken.new('TestLPToken1','TestLPToken1', '1000000000000000000000');
+      TestUSDTInstance = await TestToken.new('TestUSDT','TestUSDT', '1000000000000000000000');
+      TestUSDCInstance = await TestToken.new('TestUSDC','TestUSDC', '1000000000000000000000');
+      TestDAIInstance = await TestToken.new('TestDAI','TestDAI', '1000000000000000000000');
     } catch(e) {
       assert.fail(e)
     }
@@ -181,8 +186,6 @@ contract("Pool tests", accounts => {
       assert.fail(e)
     }
   })
-
-  return;
 
   it('deposit to pool', async() => {
     try {
@@ -479,10 +482,6 @@ contract("Pool tests", accounts => {
   it('withdraw all balances', async() => {
     try {
       let acc5 = await Pool1Instance.userInfo(accounts[5])
-
-      // console.log(Number(acc5.amount))
-      // console.log(Number(acc5.rewardDebt))
-
       await Pool1Instance.withdraw(acc5.amount, {from: accounts[5]})
 
       let finalPoolBalance = await TestLPInstance1.balanceOf(Pool1Instance.address);
@@ -493,16 +492,138 @@ contract("Pool tests", accounts => {
   })
 
 
-  // it('some unit tests', async() => {
-  //   try {
-  //     await catchRevertMessage(Pool1Instance.addPeriod(100, 100, 50000), 'onlyFactory')
-  //     await catchRevertMessage(PoolControllerInstance.addPeriod(0, 100, 100, 50000), 'two periods in the same time')
-  //     await catchRevertMessage(Pool1Instance.deposit('0', {from: accounts[6]}), '_amount must be more than zero');
-  //     await Pool1Instance.updatePool();
-  //   } catch(e) {
-  //     assert.fail(e)
-  //   }
-  // })
+  it('some unit tests', async() => {
+    try {
+      await catchRevertMessage(Pool1Instance.addPeriod(100, 100, 50000), 'onlyController')
+      await catchRevertMessage(PoolControllerInstance.addPeriod(0, 100, 100, 50000), 'two periods in the same time')
+      await catchRevertMessage(Pool1Instance.deposit('0', {from: accounts[6]}), 'amount must be more than zero');
+      await Pool1Instance.updatePool();
+    } catch(e) {
+      assert.fail(e)
+    }
+  })
+
+  it('revenue part', async() => {
+    try {
+
+      //deposit again
+      await TestLPInstance1.transfer(accounts[5], '10000000000000000000');
+      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[5]});
+      await Pool1Instance.deposit('500000000000000000', {from: accounts[5]});
+
+      await TestLPInstance1.transfer(accounts[6], '10000000000000000000');
+      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[6]});
+      await Pool1Instance.deposit('1000000000000000000', {from: accounts[6]});
+
+
+      await TestUSDTInstance.transfer(Pool1Instance.address, '1000000000000000000000');
+      await PoolControllerInstance.addRevenue(0, TestUSDTInstance.address, '1000000000000000000000');
+
+
+      let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
+      await Pool1Instance.withdraw('0', {from: accounts[5]});
+      let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
+
+      // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
+      // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
+
+      let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
+      await Pool1Instance.withdraw('0', {from: accounts[6]});
+      let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
+
+      // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
+      // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
+
+      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+
+    } catch(e) {
+      assert.fail(e)
+    }
+  })
+
+  it('multiply revenue part', async() => {
+    try {
+      await TestUSDCInstance.transfer(Pool1Instance.address, '1000000000000000000000');
+      await PoolControllerInstance.addRevenue(0, TestUSDCInstance.address, '1000000000000000000000');
+
+      await TestDAIInstance.transfer(Pool1Instance.address, '1000000000000000000000');
+      await PoolControllerInstance.addRevenue(0, TestDAIInstance.address, '1000000000000000000000');
+
+
+      let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
+      await Pool1Instance.withdraw('0', {from: accounts[5]});
+      let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
+
+      // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
+      // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
+
+      let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
+      await Pool1Instance.withdraw('0', {from: accounts[6]});
+      let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
+
+      // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
+      // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
+
+      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+
+      //-----------------------------------------------
+      
+      let balanceUSDCBefore = await TestUSDCInstance.balanceOf(accounts[5])
+      await Pool1Instance.withdraw('0', {from: accounts[5]});
+      let balanceUSDCAfter = await TestUSDCInstance.balanceOf(accounts[5])
+
+      // console.log("balanceUSDCBefore: ", balanceUSDCBefore.toString())
+      // console.log("balanceUSDCAfter: ", balanceUSDCAfter.toString())
+
+      let balanceUSDC2Before = await TestUSDCInstance.balanceOf(accounts[6])
+      await Pool1Instance.withdraw('0', {from: accounts[6]});
+      let balanceUSDC2After = await TestUSDCInstance.balanceOf(accounts[6])
+
+      // console.log("balanceUSDC2Before: ", balanceUSDC2Before.toString())
+      // console.log("balanceUSDC2After: ", balanceUSDC2After.toString())
+
+      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+      //--------------------------------------------
+
+
+      await TestLPInstance1.transfer(accounts[4], '10000000000000000000');
+      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[4]});
+      await Pool1Instance.deposit('1000000000000000000', {from: accounts[4]});
+
+      let balanceUSDT3After = await TestUSDCInstance.balanceOf(accounts[4])
+      let balanceUSDC3After = await TestUSDCInstance.balanceOf(accounts[4])
+      let balanceDAI3After = await TestUSDCInstance.balanceOf(accounts[4])
+      assert.equal(balanceUSDT3After.toNumber(), 0);
+      assert.equal(balanceUSDC3After.toNumber(), 0);
+      assert.equal(balanceDAI3After.toNumber(), 0);
+
+
+      let balanceDAIBefore = await TestDAIInstance.balanceOf(accounts[5])
+      await Pool1Instance.withdraw('0', {from: accounts[5]});
+      let balanceDAIAfter = await TestDAIInstance.balanceOf(accounts[5])
+
+      await Pool1Instance.withdraw('0', {from: accounts[5]});
+
+      let balanceDAIAfterAfter = await TestDAIInstance.balanceOf(accounts[5])
+      assert.equal(balanceDAIAfter.toString(), balanceDAIAfterAfter.toString());
+
+      // console.log("balanceDAIBefore: ", balanceDAIBefore.toString())
+      // console.log("balanceDAIAfter: ", balanceDAIAfter.toString())
+
+      let balanceDAI2Before = await TestUSDTInstance.balanceOf(accounts[6])
+      await Pool1Instance.withdraw('0', {from: accounts[6]});
+      let balanceDAI2After = await TestUSDTInstance.balanceOf(accounts[6])
+
+      // console.log("balanceDAI2Before: ", balanceDAI2Before.toString())
+      // console.log("balanceDAI2After: ", balanceDAI2After.toString())
+      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+
+      //------------------------------------------
+
+    } catch(e) {
+      assert.fail(e)
+    }
+  })
  
 });
 

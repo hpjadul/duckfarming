@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">90% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>9/10</span>
+        <span class='fraction'>11/11</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">50% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>1/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">75% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>3/4</span>
+        <span class='fraction'>5/5</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">90% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>9/10</span>
+        <span class='fraction'>11/11</span>
       </div>
     </div>
   </div>
@@ -84,7 +84,21 @@
 39
 40
 41
-42</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -108,22 +122,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18×</span>
-<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
@@ -134,11 +156,14 @@ import "./Pool.sol";
 &nbsp;
 contract PoolController is Ownable {
 	
+	// DUCK TOKEN
 	DuckToken public duck;
+	// Array of pools
 	Pool[] public pools;
 	
 	address public devAddress;
 &nbsp;
+	// Mapping is address is pool
 	mapping(address =&gt; bool) public canMint;
 &nbsp;
 	event NewPool(address indexed poolAddress, address lpToken);
@@ -148,6 +173,7 @@ contract PoolController is Ownable {
 		devAddress = _devAddress;
 	}
 &nbsp;
+	// Add a new pool. Can only be called by the owner.
 	function newPool(address lpToken, uint startingBlock, uint[] memory blocks, uint[] memory farmingSupplies) public onlyOwner {
 		Pool pool = new Pool(lpToken, startingBlock, blocks, farmingSupplies);
 		pools.push(pool);
@@ -158,10 +184,17 @@ contract PoolController is Ownable {
 		emit NewPool(address(pool), lpToken);
 	}
 &nbsp;
-<span class="fstat-no" title="function not covered" >	function addPeriod(uint poolIndex, uint startingBlock, uint blocks, uint farmingSupply) public onlyOwner {</span>
-<span class="cstat-no" title="statement not covered" >		pools[poolIndex].addPeriod(startingBlock, blocks, farmingSupply)</span>;
+	// Update already created pool by adding NEW period. Can only be called by the owner.
+	function addPeriod(uint poolIndex, uint startingBlock, uint blocks, uint farmingSupply) public onlyOwner {
+		pools[poolIndex].addPeriod(startingBlock, blocks, farmingSupply);
+	}
+	
+	// Add new revenue for a pool. Can only be called by the owner. 
+	function addRevenue(uint poolIndex, address tokenAddress, uint amount) public onlyOwner {
+	    pools[poolIndex].addRevenue(tokenAddress, amount);
 	}
 &nbsp;
+	// Mint DUCK TOKEN. Can be called by pools only
 	function mint(address to, uint value) public {
 		<span class="missing-if-branch" title="else path not taken" >E</span>require(canMint[msg.sender], "only pools");
 		duck.mint(to, value);
@@ -172,7 +205,7 @@ contract PoolController is Ownable {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Oct 29 2020 02:22:22 GMT+0200 (GMT+02:00)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Nov 16 2020 19:12:07 GMT+0200 (GMT+02:00)
 </div>
 </div>
 <script src="../prettify.js"></script>
