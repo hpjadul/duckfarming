@@ -259,6 +259,30 @@
 						"type": "address"
 					}
 				],
+				"name": "getUserLastRevenue",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					}
+				],
 				"name": "getUserPendingReward",
 				"outputs": [
 					{
@@ -421,7 +445,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -484,10 +508,10 @@
 			]
 		},
 		"localhost/contracts/Pool.sol": {
-			"keccak256": "0xb053c78f57fb9ba9039b739ba2a9d3933257d5259352ee13aa80f221018e46f7",
+			"keccak256": "0x574beccb89e58aa2da44117e0c883d08424c3d403efcabcac7c3cb986c1b87d5",
 			"urls": [
-				"bzz-raw://48192b35c018852ed3199dd68d3389873dd7aa0dd64200a241aac9ff1250b2a3",
-				"dweb:/ipfs/QmYemP9s8pRQRXxg6fvZTqQXHgFrv3RBEwe5LJvoeMkVQx"
+				"bzz-raw://0feb1b8f9a65a835295c7c56756e734d37a805d74cffdda7ce61e1f654f0be22",
+				"dweb:/ipfs/QmWs58vY2Tj5NYzrcXBFMo5HQdiH6b1RSBvG1i5va6xMsX"
 			]
 		},
 		"localhost/contracts/PoolController.sol": {

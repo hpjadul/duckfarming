@@ -281,7 +281,7 @@ contract Pool {
     for(uint i = 0; i < revenues.length; i++) {
       if(!revenuesClaimed[userAddress][i]) {
         uint userRevenue = revenues[i].amount.mul(user.amount).div(revenues[i].totalSupply);
-        return revenues[i].tokenAddress, userRevenue);
+        return (revenues[i].tokenAddress, userRevenue);
       }
     }
   }
