@@ -19,7 +19,7 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TestTokenInterface extends ethers.utils.Interface {
+interface TestPoolInterface extends ethers.utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -29,10 +29,13 @@ interface TestTokenInterface extends ethers.utils.Interface {
     "increaseAllowance(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
+    "token1()": FunctionFragment;
+    "token2()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "claimTokens(uint256)": FunctionFragment;
+    "deposit(uint256)": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -55,6 +58,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(functionFragment: "token1", values?: undefined): string;
+  encodeFunctionData(functionFragment: "token2", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -68,7 +73,11 @@ interface TestTokenInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimTokens",
+    functionFragment: "deposit",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
 
@@ -86,6 +95,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "token1", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "token2", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -95,10 +106,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimTokens",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -109,7 +118,7 @@ interface TestTokenInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TestToken extends Contract {
+export class TestPool extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -120,7 +129,7 @@ export class TestToken extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TestTokenInterface;
+  interface: TestPoolInterface;
 
   functions: {
     /**
@@ -273,6 +282,30 @@ export class TestToken extends Contract {
       0: string;
     }>;
 
+    token1(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "token1()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    token2(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "token2()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     /**
      * See {IERC20-totalSupply}.
      */
@@ -329,12 +362,22 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    claimTokens(
+    deposit(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "claimTokens(uint256)"(
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdraw(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -455,6 +498,14 @@ export class TestToken extends Contract {
    */
   "symbol()"(overrides?: CallOverrides): Promise<string>;
 
+  token1(overrides?: CallOverrides): Promise<string>;
+
+  "token1()"(overrides?: CallOverrides): Promise<string>;
+
+  token2(overrides?: CallOverrides): Promise<string>;
+
+  "token2()"(overrides?: CallOverrides): Promise<string>;
+
   /**
    * See {IERC20-totalSupply}.
    */
@@ -503,12 +554,22 @@ export class TestToken extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  claimTokens(
+  deposit(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "claimTokens(uint256)"(
+  "deposit(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  withdraw(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdraw(uint256)"(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -629,6 +690,14 @@ export class TestToken extends Contract {
      */
     "symbol()"(overrides?: CallOverrides): Promise<string>;
 
+    token1(overrides?: CallOverrides): Promise<string>;
+
+    "token1()"(overrides?: CallOverrides): Promise<string>;
+
+    token2(overrides?: CallOverrides): Promise<string>;
+
+    "token2()"(overrides?: CallOverrides): Promise<string>;
+
     /**
      * See {IERC20-totalSupply}.
      */
@@ -677,9 +746,16 @@ export class TestToken extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    claimTokens(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "claimTokens(uint256)"(
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "withdraw(uint256)"(
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -811,6 +887,14 @@ export class TestToken extends Contract {
      */
     "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    token1(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "token1()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token2(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "token2()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     /**
      * See {IERC20-totalSupply}.
      */
@@ -859,12 +943,16 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    claimTokens(
+    deposit(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "deposit(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "claimTokens(uint256)"(
+    withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdraw(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -989,6 +1077,14 @@ export class TestToken extends Contract {
      */
     "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    token1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "token1()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "token2()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     /**
      * See {IERC20-totalSupply}.
      */
@@ -1037,12 +1133,22 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    claimTokens(
+    deposit(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "claimTokens(uint256)"(
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdraw(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

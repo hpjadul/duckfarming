@@ -5,4 +5,5 @@ export * from "./Erc20Factory";
 export * from "./MigrationsFactory";
 export * from "./PoolFactory";
 export * from "./PoolControllerFactory";
+export * from "./TestPoolFactory";
 export * from "./TestTokenFactory";

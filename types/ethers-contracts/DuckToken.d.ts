@@ -31,6 +31,7 @@ interface DuckTokenInterface extends ethers.utils.Interface {
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
+    "liquidityPools(address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -76,6 +77,10 @@ interface DuckTokenInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "liquidityPools",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -135,6 +140,10 @@ interface DuckTokenInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidityPools",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -350,6 +359,20 @@ export class DuckToken extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    liquidityPools(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "liquidityPools(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     /**
      * Returns the name of the token.
      */
@@ -479,14 +502,14 @@ export class DuckToken extends Contract {
     ): Promise<ContractTransaction>;
 
     mint(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "mint(address,uint256)"(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -614,6 +637,13 @@ export class DuckToken extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  liquidityPools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "liquidityPools(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   /**
    * Returns the name of the token.
    */
@@ -711,14 +741,14 @@ export class DuckToken extends Contract {
   ): Promise<ContractTransaction>;
 
   mint(
-    _to: string,
-    _amount: BigNumberish,
+    to: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "mint(address,uint256)"(
-    _to: string,
-    _amount: BigNumberish,
+    to: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -846,6 +876,13 @@ export class DuckToken extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    liquidityPools(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "liquidityPools(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     /**
      * Returns the name of the token.
      */
@@ -943,14 +980,14 @@ export class DuckToken extends Contract {
     ): Promise<void>;
 
     mint(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "mint(address,uint256)"(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1094,6 +1131,13 @@ export class DuckToken extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    liquidityPools(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "liquidityPools(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Returns the name of the token.
      */
@@ -1191,14 +1235,14 @@ export class DuckToken extends Contract {
     ): Promise<BigNumber>;
 
     mint(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "mint(address,uint256)"(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1338,6 +1382,16 @@ export class DuckToken extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    liquidityPools(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "liquidityPools(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Returns the name of the token.
      */
@@ -1435,14 +1489,14 @@ export class DuckToken extends Contract {
     ): Promise<PopulatedTransaction>;
 
     mint(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "mint(address,uint256)"(
-      _to: string,
-      _amount: BigNumberish,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

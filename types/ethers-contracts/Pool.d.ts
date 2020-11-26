@@ -27,15 +27,18 @@ interface PoolInterface extends ethers.utils.Interface {
     "lastRewardBlock()": FunctionFragment;
     "lpToken()": FunctionFragment;
     "periods(uint256)": FunctionFragment;
+    "revenues(uint256)": FunctionFragment;
     "userInfo(address)": FunctionFragment;
     "addPeriod(uint256,uint256,uint256)": FunctionFragment;
     "updatePool()": FunctionFragment;
-    "getUserPendingReward(address)": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
     "emergencyWithdraw(uint256)": FunctionFragment;
+    "getUserPendingReward(address)": FunctionFragment;
     "getCurrentPeriodIndex()": FunctionFragment;
     "calculateDuckTokensForMint()": FunctionFragment;
+    "addRevenue(address,uint256)": FunctionFragment;
+    "getUserLastRevenue(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -56,6 +59,10 @@ interface PoolInterface extends ethers.utils.Interface {
     functionFragment: "periods",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "revenues",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "userInfo", values: [string]): string;
   encodeFunctionData(
     functionFragment: "addPeriod",
@@ -64,10 +71,6 @@ interface PoolInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "updatePool",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserPendingReward",
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
@@ -82,12 +85,24 @@ interface PoolInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getUserPendingReward",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getCurrentPeriodIndex",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "calculateDuckTokensForMint",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addRevenue",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserLastRevenue",
+    values: [string]
   ): string;
 
   decodeFunctionResult(
@@ -102,17 +117,18 @@ interface PoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "lpToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "periods", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "revenues", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addPeriod", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updatePool", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserPendingReward",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "emergencyWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserPendingReward",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -121,6 +137,11 @@ interface PoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "calculateDuckTokensForMint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "addRevenue", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserLastRevenue",
     data: BytesLike
   ): Result;
 
@@ -239,6 +260,30 @@ export class Pool extends Contract {
       3: BigNumber;
     }>;
 
+    revenues(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      totalSupply: BigNumber;
+      amount: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "revenues(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      totalSupply: BigNumber;
+      amount: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -277,6 +322,36 @@ export class Pool extends Contract {
 
     "updatePool()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+    deposit(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    emergencyWithdraw(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "emergencyWithdraw(uint256)"(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     getUserPendingReward(
       userAddress: string,
       overrides?: CallOverrides
@@ -290,36 +365,6 @@ export class Pool extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
-
-    deposit(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "deposit(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    withdraw(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "withdraw(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    emergencyWithdraw(
-      _pid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "emergencyWithdraw(uint256)"(
-      _pid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
 
     getCurrentPeriodIndex(
       overrides?: CallOverrides
@@ -343,6 +388,34 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    addRevenue(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addRevenue(address,uint256)"(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    getUserLastRevenue(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+      1: BigNumber;
+    }>;
+
+    "getUserLastRevenue(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+      1: BigNumber;
     }>;
   };
 
@@ -394,6 +467,30 @@ export class Pool extends Contract {
     3: BigNumber;
   }>;
 
+  revenues(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    tokenAddress: string;
+    totalSupply: BigNumber;
+    amount: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+  }>;
+
+  "revenues(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    tokenAddress: string;
+    totalSupply: BigNumber;
+    amount: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+  }>;
+
   userInfo(
     arg0: string,
     overrides?: CallOverrides
@@ -432,6 +529,36 @@ export class Pool extends Contract {
 
   "updatePool()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  deposit(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "deposit(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  withdraw(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdraw(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  emergencyWithdraw(
+    pid: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "emergencyWithdraw(uint256)"(
+    pid: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   getUserPendingReward(
     userAddress: string,
     overrides?: CallOverrides
@@ -442,36 +569,6 @@ export class Pool extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  deposit(
-    _amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "deposit(uint256)"(
-    _amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  withdraw(
-    _amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "withdraw(uint256)"(
-    _amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  emergencyWithdraw(
-    _pid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "emergencyWithdraw(uint256)"(
-    _pid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   getCurrentPeriodIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getCurrentPeriodIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -479,6 +576,34 @@ export class Pool extends Contract {
   calculateDuckTokensForMint(overrides?: CallOverrides): Promise<BigNumber>;
 
   "calculateDuckTokensForMint()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  addRevenue(
+    _tokenAddress: string,
+    _amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addRevenue(address,uint256)"(
+    _tokenAddress: string,
+    _amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  getUserLastRevenue(
+    userAddress: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    0: string;
+    1: BigNumber;
+  }>;
+
+  "getUserLastRevenue(address)"(
+    userAddress: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    0: string;
+    1: BigNumber;
+  }>;
 
   callStatic: {
     accDuckPerShare(overrides?: CallOverrides): Promise<BigNumber>;
@@ -529,6 +654,30 @@ export class Pool extends Contract {
       3: BigNumber;
     }>;
 
+    revenues(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      totalSupply: BigNumber;
+      amount: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "revenues(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      totalSupply: BigNumber;
+      amount: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -567,6 +716,30 @@ export class Pool extends Contract {
 
     "updatePool()"(overrides?: CallOverrides): Promise<void>;
 
+    deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    emergencyWithdraw(
+      pid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "emergencyWithdraw(uint256)"(
+      pid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getUserPendingReward(
       userAddress: string,
       overrides?: CallOverrides
@@ -577,30 +750,6 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    deposit(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "deposit(uint256)"(
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdraw(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "withdraw(uint256)"(
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    emergencyWithdraw(
-      _pid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "emergencyWithdraw(uint256)"(
-      _pid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     getCurrentPeriodIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getCurrentPeriodIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -610,6 +759,34 @@ export class Pool extends Contract {
     "calculateDuckTokensForMint()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    addRevenue(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addRevenue(address,uint256)"(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getUserLastRevenue(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+      1: BigNumber;
+    }>;
+
+    "getUserLastRevenue(address)"(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+      1: BigNumber;
+    }>;
   };
 
   filters: {
@@ -658,6 +835,13 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    revenues(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "revenues(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     userInfo(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "userInfo(address)"(
@@ -683,6 +867,30 @@ export class Pool extends Contract {
 
     "updatePool()"(overrides?: Overrides): Promise<BigNumber>;
 
+    deposit(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    emergencyWithdraw(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "emergencyWithdraw(uint256)"(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     getUserPendingReward(
       userAddress: string,
       overrides?: CallOverrides
@@ -693,30 +901,6 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    deposit(_amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "deposit(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    withdraw(_amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "withdraw(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    emergencyWithdraw(
-      _pid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "emergencyWithdraw(uint256)"(
-      _pid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     getCurrentPeriodIndex(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getCurrentPeriodIndex()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -724,6 +908,28 @@ export class Pool extends Contract {
     calculateDuckTokensForMint(overrides?: CallOverrides): Promise<BigNumber>;
 
     "calculateDuckTokensForMint()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    addRevenue(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addRevenue(address,uint256)"(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    getUserLastRevenue(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getUserLastRevenue(address)"(
+      userAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -763,6 +969,16 @@ export class Pool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    revenues(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "revenues(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     userInfo(
       arg0: string,
       overrides?: CallOverrides
@@ -791,6 +1007,36 @@ export class Pool extends Contract {
 
     "updatePool()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
+    deposit(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "deposit(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    emergencyWithdraw(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "emergencyWithdraw(uint256)"(
+      pid: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     getUserPendingReward(
       userAddress: string,
       overrides?: CallOverrides
@@ -799,36 +1045,6 @@ export class Pool extends Contract {
     "getUserPendingReward(address)"(
       userAddress: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "deposit(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "withdraw(uint256)"(
-      _amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    emergencyWithdraw(
-      _pid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "emergencyWithdraw(uint256)"(
-      _pid: BigNumberish,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     getCurrentPeriodIndex(
@@ -844,6 +1060,28 @@ export class Pool extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "calculateDuckTokensForMint()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    addRevenue(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addRevenue(address,uint256)"(
+      _tokenAddress: string,
+      _amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserLastRevenue(
+      userAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getUserLastRevenue(address)"(
+      userAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

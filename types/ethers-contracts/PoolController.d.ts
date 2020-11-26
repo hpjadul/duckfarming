@@ -30,6 +30,7 @@ interface PoolControllerInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "newPool(address,uint256,uint256[],uint256[])": FunctionFragment;
     "addPeriod(uint256,uint256,uint256,uint256)": FunctionFragment;
+    "addRevenue(uint256,address,uint256)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
   };
 
@@ -58,6 +59,10 @@ interface PoolControllerInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "addRevenue",
+    values: [BigNumberish, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "mint",
     values: [string, BigNumberish]
   ): string;
@@ -77,6 +82,7 @@ interface PoolControllerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "newPool", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addPeriod", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "addRevenue", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
 
   events: {
@@ -230,6 +236,20 @@ export class PoolController extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    addRevenue(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addRevenue(uint256,address,uint256)"(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     mint(
       to: string,
       value: BigNumberish,
@@ -327,6 +347,20 @@ export class PoolController extends Contract {
     startingBlock: BigNumberish,
     blocks: BigNumberish,
     farmingSupply: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  addRevenue(
+    poolIndex: BigNumberish,
+    tokenAddress: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addRevenue(uint256,address,uint256)"(
+    poolIndex: BigNumberish,
+    tokenAddress: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -430,6 +464,20 @@ export class PoolController extends Contract {
       startingBlock: BigNumberish,
       blocks: BigNumberish,
       farmingSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addRevenue(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addRevenue(uint256,address,uint256)"(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -546,6 +594,20 @@ export class PoolController extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    addRevenue(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addRevenue(uint256,address,uint256)"(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     mint(
       to: string,
       value: BigNumberish,
@@ -653,6 +715,20 @@ export class PoolController extends Contract {
       startingBlock: BigNumberish,
       blocks: BigNumberish,
       farmingSupply: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    addRevenue(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addRevenue(uint256,address,uint256)"(
+      poolIndex: BigNumberish,
+      tokenAddress: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

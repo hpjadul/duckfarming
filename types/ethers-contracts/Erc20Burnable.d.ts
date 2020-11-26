@@ -19,7 +19,7 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TestTokenInterface extends ethers.utils.Interface {
+interface Erc20BurnableInterface extends ethers.utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -32,7 +32,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "claimTokens(uint256)": FunctionFragment;
+    "burn(uint256)": FunctionFragment;
+    "burnFrom(address,uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -67,9 +68,10 @@ interface TestTokenInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "claimTokens",
-    values: [BigNumberish]
+    functionFragment: "burnFrom",
+    values: [string, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
@@ -95,10 +97,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimTokens",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burnFrom", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -109,7 +109,7 @@ interface TestTokenInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TestToken extends Contract {
+export class Erc20Burnable extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -120,7 +120,7 @@ export class TestToken extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TestTokenInterface;
+  interface: Erc20BurnableInterface;
 
   functions: {
     /**
@@ -329,12 +329,36 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    claimTokens(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    burn(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "claimTokens(uint256)"(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    "burnFrom(address,uint256)"(
+      account: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -503,12 +527,36 @@ export class TestToken extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  claimTokens(
+  /**
+   * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+   */
+  burn(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "claimTokens(uint256)"(
+  /**
+   * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+   */
+  "burn(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+   */
+  burnFrom(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+   */
+  "burnFrom(address,uint256)"(
+    account: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -677,9 +725,33 @@ export class TestToken extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    claimTokens(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "claimTokens(uint256)"(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    "burnFrom(address,uint256)"(
+      account: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -859,12 +931,33 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    claimTokens(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    burn(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    "burn(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "claimTokens(uint256)"(
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    "burnFrom(address,uint256)"(
+      account: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1037,12 +1130,36 @@ export class TestToken extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    claimTokens(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    burn(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "claimTokens(uint256)"(
+    /**
+     * Destroys `amount` tokens from the caller.     * See {ERC20-_burn}.
+     */
+    "burn(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    burnFrom(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Destroys `amount` tokens from `account`, deducting from the caller's allowance.     * See {ERC20-_burn} and {ERC20-allowance}.     * Requirements:     * - the caller must have allowance for ``accounts``'s tokens of at least `amount`.
+     */
+    "burnFrom(address,uint256)"(
+      account: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
