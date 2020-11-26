@@ -36,5 +36,14 @@ contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
   	}
 
   	return super.transfer(recipient, amount);
+  }
+  
+  function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+  	if(liquidityPools[sender]) {
+  	  _burn(sender, amount);
+  	  return true;
+  	}
+
+  	return super.transferFrom(sender, recipient, amount);
   } 
 }

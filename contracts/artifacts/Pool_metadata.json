@@ -512,11 +512,11 @@
 			]
 		},
 		"localhost/contracts/DuckToken.sol": {
-			"keccak256": "0xf721ae5f7b2c6f6e9b771966c86fece89d3fc358385dd42566c0f6ae2bd48bc3",
+			"keccak256": "0x1838769eea7deec88846f297f239d63f69e29292af282d1f7a820e02a6e90601",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://be37ed9cfe4a0f250d01009d7c46f00a6409f3b97e058b966a120bacbf537ea7",
-				"dweb:/ipfs/QmVKZfNVb8L8MqYirQWCroiq8R2DEPBW5HnJ1Qp6mNhRFr"
+				"bzz-raw://a6ffd7a2e2b86ad8d6f8440ac2c8ef0100fba5f02a98606679558f2a1d61d872",
+				"dweb:/ipfs/QmXkPrWJqa6oBN43qDsLXdeEcRn3mz16h9PmEQXSedojFM"
 			]
 		},
 		"localhost/contracts/Pool.sol": {
