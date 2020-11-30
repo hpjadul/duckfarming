@@ -2,8 +2,9 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TestPool is ERC20 {
+contract TestPool is ERC20, Ownable {
     IERC20 public token1;
     IERC20 public token2;
     
