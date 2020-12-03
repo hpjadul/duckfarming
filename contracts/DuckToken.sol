@@ -1,26 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 //@todo check name and symbol
-contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
+contract DuckToken is ERC20Burnable, Ownable {
 
 	uint public constant PRESALE_SUPPLY 		= 20000000e18;
 	uint public constant TEAM_SUPPLY 			= 10000000e18;
 	uint public constant MAX_FARMING_POOL 		= 70000000e18;
 
-	mapping(address => bool) public liquidityPools;
 	uint public currentFarmingPool;
 
-	constructor(address presaleWallet, address teamWallet) public {
+	constructor(address presaleWallet, address teamWallet) public ERC20("DuckToken", "DLC") {
 		_mint(presaleWallet, PRESALE_SUPPLY);
 		_mint(teamWallet, TEAM_SUPPLY);
-	}
-	
-	function addLiquidityPool(address liquidityPool) public onlyOwner {
-		liquidityPools[liquidityPool] = true;
 	}
 
 	function mint(address to, uint256 amount) public onlyOwner {
@@ -28,22 +23,4 @@ contract DuckToken is ERC20("DuckToken", "DLC"), Ownable {
 		currentFarmingPool += amount; 
         _mint(to, amount);
   }
-
-  function transfer(address recipient, uint256 amount) public override returns (bool) {
-  	if(liquidityPools[msg.sender]) {
-  	  _burn(msg.sender, amount);
-  	  return true;
-  	}
-
-  	return super.transfer(recipient, amount);
-  }
-  
-  function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
-  	if(liquidityPools[sender]) {
-  	  _burn(sender, amount);
-  	  return true;
-  	}
-
-  	return super.transferFrom(sender, recipient, amount);
-  } 
 }

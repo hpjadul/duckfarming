@@ -13,15 +13,18 @@ contract PoolController is Ownable {
 	Pool[] public pools;
 	
 	address public devAddress;
+//   address ddimAddress = 0xFbEEa1C75E4c4465CB2FCCc9c6d6afe984558E20;
+    address public ddimTokenAddress;
 
 	// Mapping is address is pool
 	mapping(address => bool) public canMint;
 
 	event NewPool(address indexed poolAddress, address lpToken);
 
-	constructor(address _duckTokenAddress, address _devAddress) public {
+	constructor(address _duckTokenAddress, address _devAddress, address _ddimTokenAddress) public {
 		duck = DuckToken(_duckTokenAddress);
 		devAddress = _devAddress;
+		ddimTokenAddress = _ddimTokenAddress;
 	}
 
 	// Add a new pool. Can only be called by the owner.
@@ -30,8 +33,6 @@ contract PoolController is Ownable {
 		pools.push(pool);
 
 		canMint[address(pool)] = true;
-		duck.addLiquidityPool(lpToken);
-
 		emit NewPool(address(pool), lpToken);
 	}
 

@@ -1,11 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./DuckToken.sol";
 import "./PoolController.sol";
+
+abstract contract IUniswapPool {
+  address public token0;
+  address public token1;
+}
+
+abstract contract IUniswapRouter {
+  function removeLiquidity(
+        address tokenA,
+        address tokenB,
+        uint liquidity,
+        uint amountAMin,
+        uint amountBMin,
+        address to,
+        uint deadline
+    ) virtual external returns (uint amountA, uint amountB);
+}
 
 contract Pool {
 
@@ -46,7 +63,7 @@ contract Pool {
   // Last block number that DUCKs distribution occurs.
 	uint public lastRewardBlock;
   // The DUCK TOKEN
-  DuckToken public duck;
+  ERC20Burnable public duck;
   // Address of LP token contract.
   IERC20 public lpToken;
   // Accumulated DUCKs per share, times 1e18. See below.
@@ -55,7 +72,12 @@ contract Pool {
   // Info of each user that stakes LP tokens.
   mapping(address => UserInfo) public userInfo;
   
+  IUniswapRouter public uniswapRouter = IUniswapRouter(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
   
+//   address duckTokenAddress;
+//   address ddimAddress = 0xFbEEa1C75E4c4465CB2FCCc9c6d6afe984558E20;
+//   address ddimTokenAddress;
+
   //Revenue part
   struct Revenue {
     address tokenAddress;
@@ -80,22 +102,27 @@ contract Pool {
 	}
 	
 	constructor(address _lpToken, uint _startingBlock, uint[] memory _blocks, uint[] memory _farmingSupplies) public {
-    require(_blocks.length > 0, "emply data");
-    require(_blocks.length == _farmingSupplies.length, "invalid data");
+        require(_blocks.length > 0, "emply data");
+        require(_blocks.length == _farmingSupplies.length, "invalid data");
     
 		controller = PoolController(msg.sender);
-    duck = DuckToken(controller.duck());
+        duck = ERC20Burnable(controller.duck());
 		lpToken = IERC20(_lpToken);
 
-    addPeriod(_startingBlock, _blocks[0], _farmingSupplies[0]);
-    uint _bufStartingBlock = _startingBlock.add(_blocks[0]).add(1);
+        addPeriod(_startingBlock, _blocks[0], _farmingSupplies[0]);
+        uint _bufStartingBlock = _startingBlock.add(_blocks[0]).add(1);
 
-    for(uint i = 1; i < _blocks.length; i++) {
-      addPeriod(_bufStartingBlock, _blocks[i], _farmingSupplies[i]);
-      _bufStartingBlock = _bufStartingBlock.add(_blocks[i]).add(1);
-    }
+        for(uint i = 1; i < _blocks.length; i++) {
+            addPeriod(_bufStartingBlock, _blocks[i], _farmingSupplies[i]);
+            _bufStartingBlock = _bufStartingBlock.add(_blocks[i]).add(1);
+        }
+        
+        IERC20(_lpToken).approve(address(uniswapRouter), uint256(-1));
+        
+        // duckTokenAddress = _duckTokenAddress;
+        // ddimTokenAddress = _ddimTokenAddress;
 
-    lastRewardBlock = _startingBlock;
+        lastRewardBlock = _startingBlock;
 	}
 	
   // Update a pool by adding NEW period. Can only be called by the controller.
@@ -178,13 +205,67 @@ contract Pool {
     }
     
     if(amount > 0) {
-      lpToken.safeTransfer(address(msg.sender), amount);
+      // lpToken.safeTransfer(address(msg.sender), amount);
       user.amount = user.amount.sub(amount);
+
+      uniWithdraw(msg.sender, amount);
     }
      
     user.rewardDebt = user.amount.mul(accDuckPerShare).div(1e18);
     emit Withdraw(msg.sender, amount);
   }
+
+  function uniWithdraw(address receiver, uint lpTokenAmount) internal {
+    IUniswapPool uniswapPool = IUniswapPool(address(lpToken));
+
+    address token0 = uniswapPool.token0();
+    address token1 = uniswapPool.token1();
+
+    (uint amountA, uint amountB) = uniswapRouter.removeLiquidity(token0, token1, lpTokenAmount, 1, 1, address(this), block.timestamp + 100);
+
+    bool isDuckBurned;
+    bool token0Sent;
+    bool token1Sent;
+    if(token0 == address(duck)) {
+        duck.burn(amountA);
+        isDuckBurned = true;
+        token0Sent = true;
+    }
+
+    if(token1 == address(duck)) {
+        duck.burn(amountB);
+        isDuckBurned = true;
+        token1Sent = true;
+    }
+    
+    if(!token0Sent) {
+        if(token0 == controller.ddimTokenAddress() && !isDuckBurned) {
+            IERC20(controller.ddimTokenAddress()).transfer(address(0), amountA);
+        } else {
+            IERC20(token0).transfer(receiver, amountA);
+        }
+    }
+    
+    if(!token1Sent) {
+        if(token1 == controller.ddimTokenAddress() && !isDuckBurned) {
+            IERC20(controller.ddimTokenAddress()).transfer(address(0), amountB);
+        } else {
+            IERC20(token1).transfer(receiver, amountB);
+        }
+    }
+
+    // function removeLiquidity(
+    //     address tokenA,
+    //     address tokenB,
+    //     uint liquidity,
+    //     uint amountAMin,
+    //     uint amountBMin,
+    //     address to,
+    //     uint deadline
+    // ) external returns (uint amountA, uint amountB);
+
+  }
+  
 
   // Withdraw without caring about rewards. EMERGENCY ONLY.
   function emergencyWithdraw(uint256 pid) public {
