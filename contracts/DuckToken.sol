@@ -4,7 +4,6 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-//@todo check name and symbol
 contract DuckToken is ERC20Burnable, Ownable {
 
 	uint public constant PRESALE_SUPPLY 		= 20000000e18;

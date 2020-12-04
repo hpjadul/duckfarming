@@ -73,10 +73,6 @@ contract Pool {
   mapping(address => UserInfo) public userInfo;
   
   IUniswapRouter public uniswapRouter = IUniswapRouter(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
-  
-//   address duckTokenAddress;
-//   address ddimAddress = 0xFbEEa1C75E4c4465CB2FCCc9c6d6afe984558E20;
-//   address ddimTokenAddress;
 
   //Revenue part
   struct Revenue {
@@ -253,17 +249,6 @@ contract Pool {
             IERC20(token1).transfer(receiver, amountB);
         }
     }
-
-    // function removeLiquidity(
-    //     address tokenA,
-    //     address tokenB,
-    //     uint liquidity,
-    //     uint amountAMin,
-    //     uint amountBMin,
-    //     address to,
-    //     uint deadline
-    // ) external returns (uint amountA, uint amountB);
-
   }
   
 
