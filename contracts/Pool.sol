@@ -105,11 +105,11 @@ contract Pool {
     duck = ERC20Burnable(controller.duck());
     lpToken = IERC20(_lpToken);
 
-    addPeriod(_startingBlock, _blocks[0].sub(1), _farmingSupplies[0]);
+    addPeriod(_startingBlock, _blocks[0], _farmingSupplies[0]);
     uint _bufStartingBlock = _startingBlock.add(_blocks[0]);
 
     for(uint i = 1; i < _blocks.length; i++) {
-        addPeriod(_bufStartingBlock, _blocks[i].sub(1), _farmingSupplies[i]);
+        addPeriod(_bufStartingBlock, _blocks[i], _farmingSupplies[i]);
         _bufStartingBlock = _bufStartingBlock.add(_blocks[i]);
     }
     
@@ -127,7 +127,7 @@ contract Pool {
 		uint tokensPerBlock = farmingSupply.div(blocks);
 		Period memory newPeriod = Period({
 			startingBlock: startingBlock,
-			blocks: blocks,
+			blocks: blocks.sub(1),
 			farmingSupply: farmingSupply,
 			tokensPerBlock: tokensPerBlock
 		});

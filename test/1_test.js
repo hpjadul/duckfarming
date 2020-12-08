@@ -143,7 +143,7 @@ contract("Pool tests", accounts => {
   })
 
   it('create first pool', async () => {
-    try {
+    // try {
       currentBlock = await web3.eth.getBlockNumber();
       Pool1.startingBlock = currentBlock + 100;
 
@@ -153,44 +153,45 @@ contract("Pool tests", accounts => {
 
       Pool1Instance = await Pool.at(result.logs[0].args[0]);
       await Pool1Instance.updatePool();
+
       let period0 = await Pool1Instance.periods(0);
       assert.equal(Number(period0[0]), Pool1.startingBlock);
-      assert.equal(Number(period0[1]), Pool1.stage0.blocks);
+      assert.equal(Number(period0[1]), Pool1.stage0.blocks-1);
       assert.equal(Number(period0[2]), Pool1.stage0.farmingSupply);
 
       let period1 = await Pool1Instance.periods(1);
-      assert.equal(Number(period1[0]), Pool1.startingBlock + Pool1.stage0.blocks + 1);
-      assert.equal(Number(period1[1]), Pool1.stage1.blocks);
+      assert.equal(Number(period1[0]), Pool1.startingBlock + Pool1.stage0.blocks);
+      assert.equal(Number(period1[1]), Pool1.stage1.blocks-1);
       assert.equal(Number(period1[2]), Pool1.stage1.farmingSupply);
 
       let period2 = await Pool1Instance.periods(2);
-      assert.equal(Number(period2[0]), Number(period1[0]) + Number(period1[1]) + 1);
-      assert.equal(Number(period2[1]), Pool1.stage2.blocks);
+      assert.equal(Number(period2[0]), Number(period1[0]) + Number(period1[1])+1);
+      assert.equal(Number(period2[1]), Pool1.stage2.blocks-1);
       assert.equal(Number(period2[2]), Pool1.stage2.farmingSupply);
 
       let period3 = await Pool1Instance.periods(3);
-      assert.equal(Number(period3[0]), Number(period2[0]) + Number(period2[1]) + 1);
-      assert.equal(Number(period3[1]), Pool1.stage3.blocks);
+      assert.equal(Number(period3[0]), Number(period2[0]) + Number(period2[1])+1);
+      assert.equal(Number(period3[1]), Pool1.stage3.blocks-1);
       assert.equal(Number(period3[2]), Pool1.stage3.farmingSupply);
 
       let period4 = await Pool1Instance.periods(4);
-      assert.equal(Number(period4[0]), Number(period3[0]) + Number(period3[1]) + 1);
-      assert.equal(Number(period4[1]), Pool1.stage4.blocks);
+      assert.equal(Number(period4[0]), Number(period3[0]) + Number(period3[1])+1);
+      assert.equal(Number(period4[1]), Pool1.stage4.blocks-1);
       assert.equal(Number(period4[2]), Pool1.stage4.farmingSupply);
 
       let period5 = await Pool1Instance.periods(5);
-      assert.equal(Number(period5[0]), Number(period4[0]) + Number(period4[1]) + 1);
-      assert.equal(Number(period5[1]), Pool1.stage5.blocks);
+      assert.equal(Number(period5[0]), Number(period4[0]) + Number(period4[1])+1);
+      assert.equal(Number(period5[1]), Pool1.stage5.blocks-1);
       assert.equal(Number(period5[2]), Pool1.stage5.farmingSupply);
-
       let period6 = await Pool1Instance.periods(6);
-      assert.equal(Number(period6[0]), Number(period5[0]) + Number(period5[1]) + 1);
-      assert.equal(Number(period6[1]), Pool1.stage6.blocks);
+      assert.equal(Number(period6[0]), Number(period5[0]) + Number(period5[1])+1);
+
+      assert.equal(Number(period6[1]), Pool1.stage6.blocks-1);
       assert.equal(Number(period6[2]), Pool1.stage6.farmingSupply);
 
-    } catch(e) {
-      assert.fail(e);
-    }
+    // } catch(e) {
+    //   assert.fail(e);
+    // }
   })
 
   it('check updatePool', async() => {
@@ -278,25 +279,25 @@ contract("Pool tests", accounts => {
       let currentBlock = await web3.eth.getBlockNumber();
 
       contractDuckBalance = await DuckTokenInstance.balanceOf(Pool1Instance.address);
-      console.log("contractDuckBalance: ", Number(contractDuckBalance))
+      // console.log("contractDuckBalance: ", Number(contractDuckBalance))
       let devDuckBalance = await DuckTokenInstance.balanceOf(devAddress);
-      console.log("devDuckBalance: ", Number(devDuckBalance))
+      // console.log("devDuckBalance: ", Number(devDuckBalance))
 
       let blockDiff = currentBlock - Pool1.startingBlock
-      console.log("blockDiff: ", blockDiff)
+      // console.log("blockDiff: ", blockDiff)
 
       let rewardPerBlock = Pool1.stage0.farmingSupply/(Pool1.stage0.blocks);
-      console.log("rewardPerBlock: ", rewardPerBlock)
+      // console.log("rewardPerBlock: ", rewardPerBlock)
 
       let duckMinted = Number(contractDuckBalance) + Number(devDuckBalance);
-      console.log("duckMinted: ", Number(contractDuckBalance) + Number(devDuckBalance))
+      // console.log("duckMinted: ", Number(contractDuckBalance) + Number(devDuckBalance))
 
       let mustBeMinted = rewardPerBlock * blockDiff
-      console.log("mustBeMinted: ", mustBeMinted)
+      // console.log("mustBeMinted: ", mustBeMinted)
 
-      console.log(Math.floor(duckMinted))
-      console.log(Math.floor(duckMinted/Math.pow(10,16)))
-      console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
+      // console.log(Math.floor(duckMinted))
+      // console.log(Math.floor(duckMinted/Math.pow(10,16)))
+      // console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
 
       //check without small decimals
       assert.equal(Math.floor(duckMinted/Math.pow(10,16)), Math.floor(mustBeMinted/Math.pow(10,16)))
