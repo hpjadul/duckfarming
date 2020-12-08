@@ -305,7 +305,7 @@ contract Pool {
   			if(overflown) {
   				totalTokens += block.number.sub(periods[i].startingBlock-1).mul(periods[i].tokensPerBlock);
   			} else {
-  				totalTokens += block.number.sub(lastRewardBlock).mul(periods[i].tokensPerBlock);
+          totalTokens += block.number.sub(max(lastRewardBlock, periods[i].startingBlock-1)).mul(periods[i].tokensPerBlock);
   			}
 
   			break;

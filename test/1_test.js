@@ -294,6 +294,7 @@ contract("Pool tests", accounts => {
       let mustBeMinted = rewardPerBlock * blockDiff
       console.log("mustBeMinted: ", mustBeMinted)
 
+      console.log(Math.floor(duckMinted))
       console.log(Math.floor(duckMinted/Math.pow(10,16)))
       console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
 
