@@ -278,24 +278,24 @@ contract("Pool tests", accounts => {
       let currentBlock = await web3.eth.getBlockNumber();
 
       contractDuckBalance = await DuckTokenInstance.balanceOf(Pool1Instance.address);
-      // console.log("contractDuckBalance: ", Number(contractDuckBalance))
+      console.log("contractDuckBalance: ", Number(contractDuckBalance))
       let devDuckBalance = await DuckTokenInstance.balanceOf(devAddress);
-      // console.log("devDuckBalance: ", Number(devDuckBalance))
+      console.log("devDuckBalance: ", Number(devDuckBalance))
 
       let blockDiff = currentBlock - Pool1.startingBlock
-      // console.log("blockDiff: ", blockDiff)
+      console.log("blockDiff: ", blockDiff)
 
-      let rewardPerBlock = Pool1.stage0.farmingSupply/Pool1.stage0.blocks;
-      // console.log("rewardPerBlock: ", rewardPerBlock)
+      let rewardPerBlock = Pool1.stage0.farmingSupply/(Pool1.stage0.blocks);
+      console.log("rewardPerBlock: ", rewardPerBlock)
 
       let duckMinted = Number(contractDuckBalance) + Number(devDuckBalance);
-      // console.log("duckMinted: ", Number(contractDuckBalance) + Number(devDuckBalance))
+      console.log("duckMinted: ", Number(contractDuckBalance) + Number(devDuckBalance))
 
       let mustBeMinted = rewardPerBlock * blockDiff
-      // console.log("mustBeMinted: ", mustBeMinted)
+      console.log("mustBeMinted: ", mustBeMinted)
 
-      // console.log(Math.floor(duckMinted/Math.pow(10,16)))
-      // console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
+      console.log(Math.floor(duckMinted/Math.pow(10,16)))
+      console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
 
       //check without small decimals
       assert.equal(Math.floor(duckMinted/Math.pow(10,16)), Math.floor(mustBeMinted/Math.pow(10,16)))

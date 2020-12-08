@@ -98,27 +98,24 @@ contract Pool {
 	}
 	
 	constructor(address _lpToken, uint _startingBlock, uint[] memory _blocks, uint[] memory _farmingSupplies) public {
-        require(_blocks.length > 0, "emply data");
-        require(_blocks.length == _farmingSupplies.length, "invalid data");
+    require(_blocks.length > 0, "emply data");
+    require(_blocks.length == _farmingSupplies.length, "invalid data");
+
+    controller = PoolController(msg.sender);
+    duck = ERC20Burnable(controller.duck());
+    lpToken = IERC20(_lpToken);
+
+    addPeriod(_startingBlock, _blocks[0].sub(1), _farmingSupplies[0]);
+    uint _bufStartingBlock = _startingBlock.add(_blocks[0]);
+
+    for(uint i = 1; i < _blocks.length; i++) {
+        addPeriod(_bufStartingBlock, _blocks[i].sub(1), _farmingSupplies[i]);
+        _bufStartingBlock = _bufStartingBlock.add(_blocks[i]);
+    }
     
-		controller = PoolController(msg.sender);
-        duck = ERC20Burnable(controller.duck());
-		lpToken = IERC20(_lpToken);
-
-        addPeriod(_startingBlock, _blocks[0], _farmingSupplies[0]);
-        uint _bufStartingBlock = _startingBlock.add(_blocks[0]).add(1);
-
-        for(uint i = 1; i < _blocks.length; i++) {
-            addPeriod(_bufStartingBlock, _blocks[i], _farmingSupplies[i]);
-            _bufStartingBlock = _bufStartingBlock.add(_blocks[i]).add(1);
-        }
-        
-        IERC20(_lpToken).approve(address(uniswapRouter), uint256(-1));
-        
-        // duckTokenAddress = _duckTokenAddress;
-        // ddimTokenAddress = _ddimTokenAddress;
-
-        lastRewardBlock = _startingBlock;
+    IERC20(_lpToken).approve(address(uniswapRouter), uint256(-1));
+    
+    lastRewardBlock = _startingBlock;
 	}
 	
   // Update a pool by adding NEW period. Can only be called by the controller.
@@ -297,12 +294,16 @@ contract Pool {
 
   		uint buf = periods[i].startingBlock.add(periods[i].blocks);
 
-  		if(block.number > buf && buf > lastRewardBlock) {
-  			totalTokens += buf.sub(lastRewardBlock).mul(periods[i].tokensPerBlock);
+      if(lastRewardBlock > buf) {
+        continue;
+      }
+
+  		if(block.number > buf) {
+			  totalTokens += buf.sub(max(lastRewardBlock, periods[i].startingBlock-1)).mul(periods[i].tokensPerBlock);
   			overflown = true;
   		} else {
   			if(overflown) {
-  				totalTokens += block.number.sub(periods[i].startingBlock).mul(periods[i].tokensPerBlock);
+  				totalTokens += block.number.sub(periods[i].startingBlock-1).mul(periods[i].tokensPerBlock);
   			} else {
   				totalTokens += block.number.sub(lastRewardBlock).mul(periods[i].tokensPerBlock);
   			}
@@ -380,4 +381,12 @@ contract Pool {
       IERC20(tokenAddress).transfer(to, balance);
     }
   }
+
+  function max(uint a, uint b) public pure returns(uint) {
+    if(a > b) {
+      return a;
+    }
+    return b;
+  }
+  
 }
