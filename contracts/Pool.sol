@@ -120,6 +120,8 @@ contract Pool {
 	
   // Update a pool by adding NEW period. Can only be called by the controller.
 	function addPeriod(uint startingBlock, uint blocks, uint farmingSupply) public onlyController {
+    require(startingBlock >= block.number);
+    
     if(periods.length > 0) {
       require(startingBlock > periods[periods.length-1].startingBlock.add(periods[periods.length-1].blocks), "two periods in the same time");
     }
