@@ -8,38 +8,37 @@ const TestToken = artifacts.require("TestToken")
 const ADDRESS0 = '0x0000000000000000000000000000000000000000';
 //@TODO remove all commented lines
 
-//000000000000000000
-const Pool1 = {
-  startingBlock: 0,
-  stage0: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage1: {
-    blocks: 558072,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage2: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage3: {
-    blocks: 558072,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage4: {
-    blocks: 46368,
-    farmingSupply: '3000000000000000000000000'
-  },
-  stage5: {
-    blocks: 1162512,
-    farmingSupply: '2000000000000000000000000'
-  },
-  stage6: {
-    blocks: 9671040,
-    farmingSupply: '5000000000000000000000000'
-  }
-}
+// const Pool1 = {
+//   startingBlock: 0,
+//   stage0: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage1: {
+//     blocks: 558072,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage2: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage3: {
+//     blocks: 558072,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage4: {
+//     blocks: 46368,
+//     farmingSupply: '3000000000000000000000000'
+//   },
+//   stage5: {
+//     blocks: 1162512,
+//     farmingSupply: '2000000000000000000000000'
+//   },
+//   stage6: {
+//     blocks: 9671040,
+//     farmingSupply: '5000000000000000000000000'
+//   }
+// }
 
 // [46368, 558072, 46368, 558072, 46368, 1162512 , 9671040]
 // ["3000000000000000000000000", "2000000000000000000000000", "3000000000000000000000000", "2000000000000000000000000", "3000000000000000000000000", "2000000000000000000000000", "5000000000000000000000000"]
@@ -66,37 +65,37 @@ const Pool1 = {
 // POOL(DUCK - DDIM) - 0xCaDa46B2dAE3B4f9b03B63f5130174164475f836
 // https://rinkeby.etherscan.io/tx/0x833601e7aea476c739be9a22f23dcf315dad3ed9b8b9d04290c7d1af2e8ec92c
 
-// const Pool1 = {
-//   startingBlock: 0,
-//   stage0: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage1: {
-//     blocks: 5580,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage2: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage3: {
-//     blocks: 5580,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage4: {
-//     blocks: 463,
-//     farmingSupply: '3000000000000000000000000'
-//   },
-//   stage5: {
-//     blocks: 11625,
-//     farmingSupply: '2000000000000000000000000'
-//   },
-//   stage6: {
-//     blocks: 96710,
-//     farmingSupply: '5000000000000000000000000'
-//   }
-// }
+const Pool1 = {
+  startingBlock: 0,
+  stage0: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage1: {
+    blocks: 5580,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage2: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage3: {
+    blocks: 5580,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage4: {
+    blocks: 463,
+    farmingSupply: '3000000000000000000000000'
+  },
+  stage5: {
+    blocks: 11625,
+    farmingSupply: '2000000000000000000000000'
+  },
+  stage6: {
+    blocks: 96710,
+    farmingSupply: '5000000000000000000000000'
+  }
+}
 
 var bufferBlock = 0;
 
@@ -110,88 +109,73 @@ contract("Pool tests", accounts => {
   let devAddress = accounts[9];
   
   it("catch instances", async () => {
-    try {
-      DuckTokenInstance = await DuckToken.deployed();
-      PoolControllerInstance = await PoolController.deployed();
-      TestLPInstance1 = await TestToken.new('TestLPToken1','TestLPToken1', '1000000000000000000000');
-      TestUSDTInstance = await TestToken.new('TestUSDT','TestUSDT', '1000000000000000000000');
-      TestUSDCInstance = await TestToken.new('TestUSDC','TestUSDC', '1000000000000000000000');
-      TestDAIInstance = await TestToken.new('TestDAI','TestDAI', '1000000000000000000000');
-    } catch(e) {
-      assert.fail(e)
-    }
-    
+    DuckTokenInstance = await DuckToken.deployed();
+    PoolControllerInstance = await PoolController.deployed();
+    TestLPInstance1 = await TestToken.new('TestLPToken1','TestLPToken1', '1000000000000000000000');
+    TestUSDTInstance = await TestToken.new('TestUSDT','TestUSDT', '1000000000000000000000');
+    TestUSDCInstance = await TestToken.new('TestUSDC','TestUSDC', '1000000000000000000000');
+    TestDAIInstance = await TestToken.new('TestDAI','TestDAI', '1000000000000000000000');
   })
 
   it('check initital data', async () => {
-    try {
-      let expectedPresaleWalletBalance = await DuckTokenInstance.PRESALE_SUPPLY();
-      let presaleWalletBalance = await DuckTokenInstance.balanceOf(presaleWallet);
+    let expectedPresaleWalletBalance = await DuckTokenInstance.PRESALE_SUPPLY();
+    let presaleWalletBalance = await DuckTokenInstance.balanceOf(presaleWallet);
 
-      let expectedTeamWalletBalance = await DuckTokenInstance.TEAM_SUPPLY();
-      let teamWalletBalance = await DuckTokenInstance.balanceOf(teamWallet);
+    let expectedTeamWalletBalance = await DuckTokenInstance.TEAM_SUPPLY();
+    let teamWalletBalance = await DuckTokenInstance.balanceOf(teamWallet);
 
-      assert.equal(Number(presaleWalletBalance), Number(expectedPresaleWalletBalance), 'invalid initial balance')
-      assert.equal(Number(teamWalletBalance), Number(expectedTeamWalletBalance), 'invalid initial balance');
+    assert.equal(Number(presaleWalletBalance), Number(expectedPresaleWalletBalance), 'invalid initial balance')
+    assert.equal(Number(teamWalletBalance), Number(expectedTeamWalletBalance), 'invalid initial balance');
 
-      let currentTokenOwner = await DuckTokenInstance.owner();
-      assert.equal(currentTokenOwner, PoolControllerInstance.address, 'invalid token owner');
-
-    } catch(e) {
-      assert.fail(e);
-    }
+    let currentTokenOwner = await DuckTokenInstance.owner();
+    assert.equal(currentTokenOwner, PoolControllerInstance.address, 'invalid token owner');
   })
 
   it('create first pool', async () => {
-    // try {
-      currentBlock = await web3.eth.getBlockNumber();
-      Pool1.startingBlock = currentBlock + 100;
+    currentBlock = await web3.eth.getBlockNumber();
+    Pool1.startingBlock = currentBlock + 100;
 
-      let result = await PoolControllerInstance.newPool(TestLPInstance1.address, Pool1.startingBlock,
-        [Pool1.stage0.blocks, Pool1.stage1.blocks, Pool1.stage2.blocks, Pool1.stage3.blocks, Pool1.stage4.blocks, Pool1.stage5.blocks, Pool1.stage6.blocks],
-        [Pool1.stage0.farmingSupply, Pool1.stage1.farmingSupply, Pool1.stage2.farmingSupply, Pool1.stage3.farmingSupply,  Pool1.stage4.farmingSupply,  Pool1.stage5.farmingSupply,  Pool1.stage6.farmingSupply])
+    let result = await PoolControllerInstance.newPool(TestLPInstance1.address, Pool1.startingBlock,
+      [Pool1.stage0.blocks, Pool1.stage1.blocks, Pool1.stage2.blocks, Pool1.stage3.blocks, Pool1.stage4.blocks, Pool1.stage5.blocks, Pool1.stage6.blocks],
+      [Pool1.stage0.farmingSupply, Pool1.stage1.farmingSupply, Pool1.stage2.farmingSupply, Pool1.stage3.farmingSupply,  Pool1.stage4.farmingSupply,  Pool1.stage5.farmingSupply,  Pool1.stage6.farmingSupply])
 
-      Pool1Instance = await Pool.at(result.logs[0].args[0]);
-      await Pool1Instance.updatePool();
+    Pool1Instance = await Pool.at(result.logs[0].args[0]);
+    await Pool1Instance.updatePool();
 
-      let period0 = await Pool1Instance.periods(0);
-      assert.equal(Number(period0[0]), Pool1.startingBlock);
-      assert.equal(Number(period0[1]), Pool1.stage0.blocks-1);
-      assert.equal(Number(period0[2]), Pool1.stage0.farmingSupply);
+    let period0 = await Pool1Instance.periods(0);
+    assert.equal(Number(period0[0]), Pool1.startingBlock);
+    assert.equal(Number(period0[1]), Pool1.stage0.blocks-1);
+    assert.equal(Number(period0[2]), Pool1.stage0.farmingSupply);
 
-      let period1 = await Pool1Instance.periods(1);
-      assert.equal(Number(period1[0]), Pool1.startingBlock + Pool1.stage0.blocks);
-      assert.equal(Number(period1[1]), Pool1.stage1.blocks-1);
-      assert.equal(Number(period1[2]), Pool1.stage1.farmingSupply);
+    let period1 = await Pool1Instance.periods(1);
+    assert.equal(Number(period1[0]), Pool1.startingBlock + Pool1.stage0.blocks);
+    assert.equal(Number(period1[1]), Pool1.stage1.blocks-1);
+    assert.equal(Number(period1[2]), Pool1.stage1.farmingSupply);
 
-      let period2 = await Pool1Instance.periods(2);
-      assert.equal(Number(period2[0]), Number(period1[0]) + Number(period1[1])+1);
-      assert.equal(Number(period2[1]), Pool1.stage2.blocks-1);
-      assert.equal(Number(period2[2]), Pool1.stage2.farmingSupply);
+    let period2 = await Pool1Instance.periods(2);
+    assert.equal(Number(period2[0]), Number(period1[0]) + Number(period1[1])+1);
+    assert.equal(Number(period2[1]), Pool1.stage2.blocks-1);
+    assert.equal(Number(period2[2]), Pool1.stage2.farmingSupply);
 
-      let period3 = await Pool1Instance.periods(3);
-      assert.equal(Number(period3[0]), Number(period2[0]) + Number(period2[1])+1);
-      assert.equal(Number(period3[1]), Pool1.stage3.blocks-1);
-      assert.equal(Number(period3[2]), Pool1.stage3.farmingSupply);
+    let period3 = await Pool1Instance.periods(3);
+    assert.equal(Number(period3[0]), Number(period2[0]) + Number(period2[1])+1);
+    assert.equal(Number(period3[1]), Pool1.stage3.blocks-1);
+    assert.equal(Number(period3[2]), Pool1.stage3.farmingSupply);
 
-      let period4 = await Pool1Instance.periods(4);
-      assert.equal(Number(period4[0]), Number(period3[0]) + Number(period3[1])+1);
-      assert.equal(Number(period4[1]), Pool1.stage4.blocks-1);
-      assert.equal(Number(period4[2]), Pool1.stage4.farmingSupply);
+    let period4 = await Pool1Instance.periods(4);
+    assert.equal(Number(period4[0]), Number(period3[0]) + Number(period3[1])+1);
+    assert.equal(Number(period4[1]), Pool1.stage4.blocks-1);
+    assert.equal(Number(period4[2]), Pool1.stage4.farmingSupply);
 
-      let period5 = await Pool1Instance.periods(5);
-      assert.equal(Number(period5[0]), Number(period4[0]) + Number(period4[1])+1);
-      assert.equal(Number(period5[1]), Pool1.stage5.blocks-1);
-      assert.equal(Number(period5[2]), Pool1.stage5.farmingSupply);
-      let period6 = await Pool1Instance.periods(6);
-      assert.equal(Number(period6[0]), Number(period5[0]) + Number(period5[1])+1);
+    let period5 = await Pool1Instance.periods(5);
+    assert.equal(Number(period5[0]), Number(period4[0]) + Number(period4[1])+1);
+    assert.equal(Number(period5[1]), Pool1.stage5.blocks-1);
+    assert.equal(Number(period5[2]), Pool1.stage5.farmingSupply);
+    let period6 = await Pool1Instance.periods(6);
+    assert.equal(Number(period6[0]), Number(period5[0]) + Number(period5[1])+1);
 
-      assert.equal(Number(period6[1]), Pool1.stage6.blocks-1);
-      assert.equal(Number(period6[2]), Pool1.stage6.farmingSupply);
-
-    // } catch(e) {
-    //   assert.fail(e);
-    // }
+    assert.equal(Number(period6[1]), Pool1.stage6.blocks-1);
+    assert.equal(Number(period6[2]), Pool1.stage6.farmingSupply);
   })
 
   it('check updatePool', async() => {
@@ -233,6 +217,7 @@ contract("Pool tests", accounts => {
       }
 
       await Pool1Instance.updatePool();
+
     } catch(e) {
       assert.fail(e)
     }
@@ -240,64 +225,43 @@ contract("Pool tests", accounts => {
   })
 
   it('calculateDuckTokensForMint', async() => {
-    try {
-      for(let i = 0; i < 100; i++) {
-        web3.currentProvider.send({
-          jsonrpc: "2.0",
-          method: "evm_mine",
-          id: new Date().getTime()
-        }, (err, result) => {
-           
-        });
-      }
+    let previousBlock = await web3.eth.getBlockNumber();
 
-      let lastRewardBlock = await Pool1Instance.lastRewardBlock()
-      // console.log("lastRewardBlock: ", Number(lastRewardBlock))
-      let currentBlock = await web3.eth.getBlockNumber();
-      // console.log("currentBlock: ", Number(currentBlock))
-
-      let getCurrentPeriodIndex = await Pool1Instance.getCurrentPeriodIndex()
-      // console.log("getCurrentPeriodIndex: ", Number(getCurrentPeriodIndex))
-
-      let calculateDuckTokensForMint = await Pool1Instance.calculateDuckTokensForMint()
-      // console.log("calculateDuckTokensForMint: ", Number(calculateDuckTokensForMint))
-    } catch(e) {
-      assert.fail(e)
+    for(let i = 0; i < 110; i++) {
+      web3.currentProvider.send({
+        jsonrpc: "2.0",
+        method: "evm_mine",
+        id: new Date().getTime()
+      }, (err, result) => {
+         
+      });
     }
+
+    let lastRewardBlock = await Pool1Instance.lastRewardBlock()
+    let currentBlock = await web3.eth.getBlockNumber();
+    let getCurrentPeriodIndex = await Pool1Instance.getCurrentPeriodIndex()
+    let calculateDuckTokensForMint = await Pool1Instance.calculateDuckTokensForMint()
+
+    let rewardPerBlock = Pool1.stage0.farmingSupply/(Pool1.stage0.blocks);
     
+    assert.equal(Number(calculateDuckTokensForMint), (currentBlock-previousBlock) * rewardPerBlock)
   })
 
   it('check basic farming part', async() => {
     try {
       let contractLPBalance = await TestLPInstance1.balanceOf(Pool1Instance.address);
-      // console.log(Number(contractLPBalance))
       let contractDuckBalance = await DuckTokenInstance.balanceOf(Pool1Instance.address);
-      // console.log(Number(contractDuckBalance))
-
       
       await Pool1Instance.updatePool();
       let currentBlock = await web3.eth.getBlockNumber();
 
       contractDuckBalance = await DuckTokenInstance.balanceOf(Pool1Instance.address);
-      // console.log("contractDuckBalance: ", Number(contractDuckBalance))
       let devDuckBalance = await DuckTokenInstance.balanceOf(devAddress);
-      // console.log("devDuckBalance: ", Number(devDuckBalance))
-
       let blockDiff = currentBlock - Pool1.startingBlock
-      // console.log("blockDiff: ", blockDiff)
-
       let rewardPerBlock = Pool1.stage0.farmingSupply/(Pool1.stage0.blocks);
-      // console.log("rewardPerBlock: ", rewardPerBlock)
-
       let duckMinted = Number(contractDuckBalance) + Number(devDuckBalance);
-      // console.log("duckMinted: ", Number(contractDuckBalance) + Number(devDuckBalance))
 
       let mustBeMinted = rewardPerBlock * blockDiff
-      // console.log("mustBeMinted: ", mustBeMinted)
-
-      // console.log(Math.floor(duckMinted))
-      // console.log(Math.floor(duckMinted/Math.pow(10,16)))
-      // console.log(Math.floor(mustBeMinted/Math.pow(10,16)))
 
       //check without small decimals
       assert.equal(Math.floor(duckMinted/Math.pow(10,16)), Math.floor(mustBeMinted/Math.pow(10,16)))
@@ -496,149 +460,131 @@ contract("Pool tests", accounts => {
   // })
 
   // it('withdraw all balances', async() => {
-  //   try {
-  //     let acc5 = await Pool1Instance.userInfo(accounts[5])
-  //     await Pool1Instance.withdraw(acc5.amount, {from: accounts[5]})
+  //   let acc5 = await Pool1Instance.userInfo(accounts[5])
+  //   console.log(acc5.amount.toString())
 
-  //     let finalPoolBalance = await TestLPInstance1.balanceOf(Pool1Instance.address);
-  //     assert.equal(Number(finalPoolBalance), 0);
-  //   } catch(e) {
-  //     assert.fail(e)
-  //   }
+  //   await Pool1Instance.withdraw(acc5.amount, {from: accounts[5]})
+
+  //   let finalPoolBalance = await TestLPInstance1.balanceOf(Pool1Instance.address);
+  //   assert.equal(Number(finalPoolBalance), 0);
   // })
 
 
   it('some unit tests', async() => {
-    try {
-      await catchRevertMessage(Pool1Instance.addPeriod(100, 100, 50000), 'onlyController')
-      await catchRevertMessage(PoolControllerInstance.addPeriod(0, 100, 100, 50000), 'two periods in the same time')
-      await catchRevertMessage(Pool1Instance.deposit('0', {from: accounts[6]}), 'amount must be more than zero');
-      await Pool1Instance.updatePool();
-    } catch(e) {
-      assert.fail(e)
-    }
+    await catchRevertMessage(Pool1Instance.addPeriod(100, 100, 50000), 'onlyController')
+    await catchRevertMessage(PoolControllerInstance.addPeriod(0, 100, 100, 500), 'startingBlock should be greater than now')
+    await catchRevertMessage(PoolControllerInstance.addPeriod(0, 100000, 100, 500), 'two periods in the same time')
+    await catchRevertMessage(Pool1Instance.deposit('0', {from: accounts[6]}), 'amount must be more than zero');
+    await Pool1Instance.updatePool();
   })
 
   it('revenue part', async() => {
-    try {
+    //deposit again
+    await TestLPInstance1.transfer(accounts[5], '10000000000000000000');
+    await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[5]});
+    await Pool1Instance.deposit('500000000000000000', {from: accounts[5]});
 
-      //deposit again
-      await TestLPInstance1.transfer(accounts[5], '10000000000000000000');
-      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[5]});
-      await Pool1Instance.deposit('500000000000000000', {from: accounts[5]});
-
-      await TestLPInstance1.transfer(accounts[6], '10000000000000000000');
-      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[6]});
-      await Pool1Instance.deposit('1000000000000000000', {from: accounts[6]});
+    await TestLPInstance1.transfer(accounts[6], '10000000000000000000');
+    await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[6]});
+    await Pool1Instance.deposit('1000000000000000000', {from: accounts[6]});
 
 
-      await TestUSDTInstance.transfer(Pool1Instance.address, '1000000000000000000000');
-      await PoolControllerInstance.addRevenue(0, TestUSDTInstance.address, '1000000000000000000000');
+    await TestUSDTInstance.approve(Pool1Instance.address, '1000000000000000000000');
+    await PoolControllerInstance.addRevenue(0, TestUSDTInstance.address, '1000000000000000000000', accounts[0]);
 
 
-      let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
-      await Pool1Instance.withdraw('0', {from: accounts[5]});
-      let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
+    let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
+    await Pool1Instance.withdraw('0', {from: accounts[5]});
+    let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
 
-      // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
-      // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
+    // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
+    // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
 
-      let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
-      await Pool1Instance.withdraw('0', {from: accounts[6]});
-      let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
+    let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
+    await Pool1Instance.withdraw('0', {from: accounts[6]});
+    let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
 
-      // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
-      // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
+    // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
+    // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
 
-      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
-
-    } catch(e) {
-      assert.fail(e)
-    }
+    assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
   })
 
   it('multiply revenue part', async() => {
-    try {
-      await TestUSDCInstance.transfer(Pool1Instance.address, '1000000000000000000000');
-      await PoolControllerInstance.addRevenue(0, TestUSDCInstance.address, '1000000000000000000000');
+    await TestUSDCInstance.approve(Pool1Instance.address, '1000000000000000000000');
+    await PoolControllerInstance.addRevenue(0, TestUSDCInstance.address, '1000000000000000000000', accounts[0]);
 
-      await TestDAIInstance.transfer(Pool1Instance.address, '1000000000000000000000');
-      await PoolControllerInstance.addRevenue(0, TestDAIInstance.address, '1000000000000000000000');
-
-
-      let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
-      await Pool1Instance.withdraw('0', {from: accounts[5]});
-      let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
-
-      // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
-      // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
-
-      let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
-      await Pool1Instance.withdraw('0', {from: accounts[6]});
-      let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
-
-      // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
-      // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
-
-      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
-
-      //-----------------------------------------------
-      
-      let balanceUSDCBefore = await TestUSDCInstance.balanceOf(accounts[5])
-      await Pool1Instance.withdraw('0', {from: accounts[5]});
-      let balanceUSDCAfter = await TestUSDCInstance.balanceOf(accounts[5])
-
-      // console.log("balanceUSDCBefore: ", balanceUSDCBefore.toString())
-      // console.log("balanceUSDCAfter: ", balanceUSDCAfter.toString())
-
-      let balanceUSDC2Before = await TestUSDCInstance.balanceOf(accounts[6])
-      await Pool1Instance.withdraw('0', {from: accounts[6]});
-      let balanceUSDC2After = await TestUSDCInstance.balanceOf(accounts[6])
-
-      // console.log("balanceUSDC2Before: ", balanceUSDC2Before.toString())
-      // console.log("balanceUSDC2After: ", balanceUSDC2After.toString())
-
-      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
-      //--------------------------------------------
+    await TestDAIInstance.approve(Pool1Instance.address, '1000000000000000000000');
+    await PoolControllerInstance.addRevenue(0, TestDAIInstance.address, '1000000000000000000000', accounts[0]);
 
 
-      await TestLPInstance1.transfer(accounts[4], '10000000000000000000');
-      await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[4]});
-      await Pool1Instance.deposit('1000000000000000000', {from: accounts[4]});
+    let balanceUSDTBefore = await TestUSDTInstance.balanceOf(accounts[5])
+    await Pool1Instance.withdraw('0', {from: accounts[5]});
+    let balanceUSDTAfter = await TestUSDTInstance.balanceOf(accounts[5])
 
-      let balanceUSDT3After = await TestUSDCInstance.balanceOf(accounts[4])
-      let balanceUSDC3After = await TestUSDCInstance.balanceOf(accounts[4])
-      let balanceDAI3After = await TestUSDCInstance.balanceOf(accounts[4])
-      assert.equal(balanceUSDT3After.toNumber(), 0);
-      assert.equal(balanceUSDC3After.toNumber(), 0);
-      assert.equal(balanceDAI3After.toNumber(), 0);
+    // console.log("balanceUSDTBefore: ", balanceUSDTBefore.toString())
+    // console.log("balanceUSDTAfter: ", balanceUSDTAfter.toString())
+
+    let balanceUSDT2Before = await TestUSDTInstance.balanceOf(accounts[6])
+    await Pool1Instance.withdraw('0', {from: accounts[6]});
+    let balanceUSDT2After = await TestUSDTInstance.balanceOf(accounts[6])
+
+    // console.log("balanceUSDT2Before: ", balanceUSDT2Before.toString())
+    // console.log("balanceUSDT2After: ", balanceUSDT2After.toString())
+
+    assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+
+    //-----------------------------------------------
+    
+    let balanceUSDCBefore = await TestUSDCInstance.balanceOf(accounts[5])
+    await Pool1Instance.withdraw('0', {from: accounts[5]});
+    let balanceUSDCAfter = await TestUSDCInstance.balanceOf(accounts[5])
+
+    // console.log("balanceUSDCBefore: ", balanceUSDCBefore.toString())
+    // console.log("balanceUSDCAfter: ", balanceUSDCAfter.toString())
+
+    let balanceUSDC2Before = await TestUSDCInstance.balanceOf(accounts[6])
+    await Pool1Instance.withdraw('0', {from: accounts[6]});
+    let balanceUSDC2After = await TestUSDCInstance.balanceOf(accounts[6])
+
+    // console.log("balanceUSDC2Before: ", balanceUSDC2Before.toString())
+    // console.log("balanceUSDC2After: ", balanceUSDC2After.toString())
+
+    assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+    //--------------------------------------------
 
 
-      let balanceDAIBefore = await TestDAIInstance.balanceOf(accounts[5])
-      await Pool1Instance.withdraw('0', {from: accounts[5]});
-      let balanceDAIAfter = await TestDAIInstance.balanceOf(accounts[5])
+    await TestLPInstance1.transfer(accounts[4], '10000000000000000000');
+    await TestLPInstance1.approve(Pool1Instance.address, '10000000000000000000', {from: accounts[4]});
+    await Pool1Instance.deposit('1000000000000000000', {from: accounts[4]});
 
-      await Pool1Instance.withdraw('0', {from: accounts[5]});
+    let balanceUSDT3After = await TestUSDCInstance.balanceOf(accounts[4])
+    let balanceUSDC3After = await TestUSDCInstance.balanceOf(accounts[4])
+    let balanceDAI3After = await TestUSDCInstance.balanceOf(accounts[4])
+    assert.equal(balanceUSDT3After.toNumber(), 0);
+    assert.equal(balanceUSDC3After.toNumber(), 0);
+    assert.equal(balanceDAI3After.toNumber(), 0);
 
-      let balanceDAIAfterAfter = await TestDAIInstance.balanceOf(accounts[5])
-      assert.equal(balanceDAIAfter.toString(), balanceDAIAfterAfter.toString());
 
-      // console.log("balanceDAIBefore: ", balanceDAIBefore.toString())
-      // console.log("balanceDAIAfter: ", balanceDAIAfter.toString())
+    let balanceDAIBefore = await TestDAIInstance.balanceOf(accounts[5])
+    await Pool1Instance.withdraw('0', {from: accounts[5]});
+    let balanceDAIAfter = await TestDAIInstance.balanceOf(accounts[5])
 
-      let balanceDAI2Before = await TestUSDTInstance.balanceOf(accounts[6])
-      await Pool1Instance.withdraw('0', {from: accounts[6]});
-      let balanceDAI2After = await TestUSDTInstance.balanceOf(accounts[6])
+    await Pool1Instance.withdraw('0', {from: accounts[5]});
 
-      // console.log("balanceDAI2Before: ", balanceDAI2Before.toString())
-      // console.log("balanceDAI2After: ", balanceDAI2After.toString())
-      assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
+    let balanceDAIAfterAfter = await TestDAIInstance.balanceOf(accounts[5])
+    assert.equal(balanceDAIAfter.toString(), balanceDAIAfterAfter.toString());
 
-      //------------------------------------------
+    // console.log("balanceDAIBefore: ", balanceDAIBefore.toString())
+    // console.log("balanceDAIAfter: ", balanceDAIAfter.toString())
 
-    } catch(e) {
-      assert.fail(e)
-    }
+    let balanceDAI2Before = await TestUSDTInstance.balanceOf(accounts[6])
+    await Pool1Instance.withdraw('0', {from: accounts[6]});
+    let balanceDAI2After = await TestUSDTInstance.balanceOf(accounts[6])
+
+    // console.log("balanceDAI2Before: ", balanceDAI2Before.toString())
+    // console.log("balanceDAI2After: ", balanceDAI2After.toString())
+    assert.ok(balanceUSDT2After.toString()/2 == balanceUSDTAfter.toString()/1)
   })
  
 });

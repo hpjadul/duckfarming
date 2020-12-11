@@ -120,7 +120,7 @@ contract Pool {
 	
   // Update a pool by adding NEW period. Can only be called by the controller.
 	function addPeriod(uint startingBlock, uint blocks, uint farmingSupply) public onlyController {
-    require(startingBlock >= block.number);
+    require(startingBlock >= block.number, "startingBlock should be greater than now");
     
     if(periods.length > 0) {
       require(startingBlock > periods[periods.length-1].startingBlock.add(periods[periods.length-1].blocks), "two periods in the same time");
@@ -332,7 +332,14 @@ contract Pool {
   //--------------------------------------------------------------------------------------
   
   // Add new Revenue, can be called only by controller
-  function addRevenue(address _tokenAddress, uint _amount) public onlyController {
+  function addRevenue(address _tokenAddress, uint _amount, address _revenueSource) public onlyController {
+    require(revenues.length < 50, "exceed revenue limit");
+
+    uint revenueBefore = IERC20(_tokenAddress).balanceOf(address(this));
+    IERC20(_tokenAddress).transferFrom(_revenueSource, address(this), _amount);
+    uint revenueAfter = IERC20(_tokenAddress).balanceOf(address(this));
+    _amount = revenueAfter.sub(revenueBefore);
+
 
     Revenue memory revenue = Revenue({
       tokenAddress: _tokenAddress,
