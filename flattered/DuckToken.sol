@@ -27,8 +27,6 @@ abstract contract Context {
 
 // File: node_modules\@openzeppelin\contracts\token\ERC20\IERC20.sol
 
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.6.0;
 
 /**
@@ -106,8 +104,6 @@ interface IERC20 {
 }
 
 // File: node_modules\@openzeppelin\contracts\math\SafeMath.sol
-
-// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
 
@@ -269,8 +265,6 @@ library SafeMath {
 
 // File: node_modules\@openzeppelin\contracts\utils\Address.sol
 
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.6.2;
 
 /**
@@ -412,8 +406,6 @@ library Address {
 }
 
 // File: node_modules\@openzeppelin\contracts\token\ERC20\ERC20.sol
-
-// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
 
@@ -722,8 +714,6 @@ contract ERC20 is Context, IERC20 {
 
 // File: @openzeppelin\contracts\token\ERC20\ERC20Burnable.sol
 
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.6.0;
 
 
@@ -764,7 +754,6 @@ abstract contract ERC20Burnable is Context, ERC20 {
 
 // File: @openzeppelin\contracts\access\Ownable.sol
 
-// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
 
@@ -833,9 +822,9 @@ contract Ownable is Context {
 }
 
 // File: contracts\DuckToken.sol
+pragma solidity ^0.6.0;
 
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+
 
 contract DuckToken is ERC20Burnable, Ownable {
 
