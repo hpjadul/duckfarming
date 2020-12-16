@@ -1,3 +1,4 @@
+![alt text](https://duckdao.io/wp-content/uploads/2020/12/photo_2020-12-16-10.14.49.jpeg)
 # DuckFarming
 
 Duck Liquidity Pool was pioneered by DuckDao, the world’s largest and most popular crowd-backed digital asset incubator. With DuckDaoDime (DDIM), we revolutionised the early stage crypto investment market. Next, we incubated and successfully launched some of the earliest DeFi projects in the space. 
