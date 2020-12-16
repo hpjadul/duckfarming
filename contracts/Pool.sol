@@ -4,7 +4,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./DuckToken.sol";
+// import "./DuckToken.sol";
 import "./PoolController.sol";
 
 abstract contract IUniswapPool {
@@ -339,7 +339,6 @@ contract Pool {
     IERC20(_tokenAddress).transferFrom(_revenueSource, address(this), _amount);
     uint revenueAfter = IERC20(_tokenAddress).balanceOf(address(this));
     _amount = revenueAfter.sub(revenueBefore);
-
 
     Revenue memory revenue = Revenue({
       tokenAddress: _tokenAddress,
