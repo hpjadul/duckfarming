@@ -1,5 +1,5 @@
 {
-  "name": "duckfarming_contracts",
+  "name": "duckfarming",
   "version": "1.0.0",
   "description": "",
   "main": "truffle-config.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DuckDao/DuckFarming_Contracts.git"
+    "url": "git+https://github.com/DuckDao/duckfarming.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DuckDao/DuckFarming_Contracts/issues"
+    "url": "https://github.com/DuckDao/duckfarming/issues"
   },
-  "homepage": "https://github.com/DuckDao/DuckFarming_Contracts#readme",
+  "homepage": "https://github.com/DuckDao/duckfarming#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^3.1.0",
     "@openzeppelin/test-helpers": "^0.5.6",
